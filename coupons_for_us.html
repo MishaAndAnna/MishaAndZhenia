@@ -899,11 +899,11 @@
             async function sendTelegramNotification(couponTitle, isReset = false, isDeleted = false) {
                 let message;
                 if (isReset) {
-                    message = `Аня сбросила все использованные купоны! 🎉 Теперь их можно использовать снова.`;
+                    message = `Женя сбросила все использованные купоны! 🎉 Теперь их можно использовать снова.`;
                 } else if (isDeleted) {
-                    message = `Аня удалила купон: "${couponTitle}"! 🗑️`;
+                    message = `Женя удалила купон: "${couponTitle}"! 🗑️`;
                 } else {
-                    message = `Аня выбрала купон: "${couponTitle}"! 🎉`;
+                    message = `Женя выбрала купон: "${couponTitle}"! 🎉`;
                 }
                 const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}`;
                 
