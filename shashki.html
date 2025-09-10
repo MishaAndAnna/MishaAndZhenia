@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Русские шашки для Миши и Анны</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-database-compat.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary-color: #7f1d1d;
+            --primary-light: #f87171;
+            --primary-dark: #991b1b;
+            --secondary-color: #b91c1c;
+            --secondary-light: #f87171;
+            --secondary-dark: #991b1b;
+            --accent-color: #fb923c;
+            --accent-dark: #ea580c;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --background-color: #fef2f2;
+            --board-bg: #8b5a2b;
+            --board-dark: #3c2f2f;
+            --board-light: #f4e1c1;
+            --white: #ffffff;
+            --black: #0f172a;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --border-radius: 12px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--gray-700);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 30% 20%, rgba(248, 113, 113, 0.1) 0%, rgba(185, 28, 28, 0.05) 30%, transparent 70%),
+                              radial-gradient(circle at 80% 70%, rgba(248, 113, 113, 0.1) 0%, rgba(185, 28, 28, 0.05) 30%, transparent 70%);
+        }
+        
+        .app-header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .app-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+        
+        .card-header h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .player-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .player-input {
+            padding: 12px 16px;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+        }
+        
+        .player-input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.2);
+        }
+        
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            text-align: center;
+        }
+        
+        .button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(185, 28, 28, 0.2);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        
+        .button:disabled {
+            background-color: var(--gray-400);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .button i {
+            margin-right: 8px;
+        }
+        
+        .button-secondary {
+            background-color: var(--secondary-color);
+        }
+        
+        .button-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .button-success {
+            background-color: var(--success-color);
+        }
+        
+        .button-success:hover {
+            background-color: #16a34a;
+        }
+        
+        .button-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .button-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        .message {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--white);
+            border-radius: var(--border-radius);
+            background-color: var(--gray-500);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .message.visible {
+            opacity: 1;
+        }
+        
+        .message.info {
+            background-color: var(--secondary-color);
+        }
+        
+        .message.success {
+            background-color: var(--success-color);
+        }
+        
+        .message.warning {
+            background-color: var(--warning-color);
+        }
+        
+        .message.error {
+            background-color: var(--danger-color);
+        }
+        
+        .game-info {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 30px;
+        }
+        
+        .game-info i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .board-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 auto;
+            max-width: 520px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-dark) 100%);
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transform: perspective(1000px) rotateX(5deg);
+            transition: transform 0.3s ease;
+        }
+        
+        .board-container:hover {
+            transform: perspective(1000px) rotateX(0deg);
+        }
+        
+        .board-title {
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .board-title i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+        
+        .coordinates {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 5px;
+            color: var(--white);
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .coordinates span {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .row-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin-right: 5px;
+            color: var(--white);
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        .row-labels span {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .board-with-labels {
+            display: flex;
+            position: relative;
+            background: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            border-radius: 8px;
+            padding: 5px;
+        }
+        
+        .board-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: 600;
+            opacity: 0;
+ Roslyn: none;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+        
+        .board-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            gap: 0;
+            margin-bottom: 20px;
+            position: relative;
+            background-color: var(--board-bg);
+            border: 3px solid #4b2e2e;
+            border-radius: 8px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cell {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 -2px 4px rgba(255, 255, 255, 0.1);
+        }
+        
+        .cell.light {
+            background-color: var(--board-light);
+        }
+        
+        .cell.dark {
+            background-color: var(--board-dark);
+        }
+        
+        .cell.selectable {
+            cursor: pointer;
+            background-color: rgba(34, 197, 94, 0.5);
+            box-shadow: 0 0 10px var(--success-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .cell.selected {
+            background-color: rgba(59, 130, 246, 0.7);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+            animation: bounce 0.3s ease;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px var(--success-color); }
+            50% { box-shadow: 0 0 20px var(--success-color); }
+            100% { box-shadow: 0 0 10px var(--success-color); }
+        }
+        
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        .piece {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .piece.white {
+            background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d1d1d1 70%);
+        }
+        
+        .piece.black {
+            background: radial-gradient(circle at 30% 30%, #4b2e2e 0%, #2d1e1e 70%);
+        }
+        
+        .piece.king::after {
+            content: '\f521';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--accent-color);
+            font-size: 28px;
+            text-shadow: 0 0 5px rgba(251, 146, 60, 0.7);
+        }
+        
+        .piece:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .piece.moving {
+            animation: slide 0.3s ease forwards;
+        }
+        
+        .piece.captured {
+            animation: fadeOut 0.3s ease forwards;
+        }
+        
+        @keyframes slide {
+            0% { transform: translate(0, 0) scale(1.1); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .rules {
+            padding: 25px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+        
+        .rules h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .rules h2 i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .rules p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .rules ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .rules li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--gray-700);
+            color: var(--white);
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .tooltip .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--gray-700) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .app-header h1 {
+                font-size: 2rem;
+            }
+            
+            .board-container {
+                max-width: 440px;
+            }
+            
+            .board {
+                grid-template-columns: repeat(8, 50px);
+                grid-template-rows: repeat(8, 50px);
+            }
+            
+            .cell {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .piece {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .piece.king::after {
+                font-size: 22px;
+            }
+            
+            .row-labels span {
+                height: 50px;
+            }
+            
+            .coordinates span {
+                width: 50px;
+            }
+            
+            .button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .app-header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .board-container {
+                max-width: 360px;
+            }
+            
+            .board {
+                grid-template-columns: repeat(8, 40px);
+                grid-template-rows: repeat(8, 40px);
+            }
+            
+            .cell {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .piece {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .piece.king::after {
+                font-size: 18px;
+            }
+            
+            .row-labels span {
+                height: 40px;
+                font-size: 0.8rem;
+            }
+            
+            .coordinates span {
+                width: 40px;
+                font-size: 0.8rem;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .player-input {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            .button {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <h1><i class="fas fa-chess-board"></i> Русские шашки для Миши и Анны</h1>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <div class="player-info">
+                <input type="text" id="playerName" class="player-input" placeholder="Введите ваше имя">
+                <button id="joinGame" class="button"><i class="fas fa-play"></i> Присоединиться к игре</button>
+            </div>
+            
+            <div class="message" id="message"></div>
+            
+            <div class="game-info" id="gameInfo"><i class="fas fa-info-circle"></i> Подготовка к игре...</div>
+            
+            <div class="board-container">
+                <div class="board-title"><i class="fas fa-chess-board"></i> Игровая доска</div>
+                <div class="board-with-labels">
+                    <div class="row-labels">
+                        <span>8</span>
+                        <span>7</span>
+                        <span>6</span>
+                        <span>5</span>
+                        <span>4</span>
+                        <span>3</span>
+                        <span>2</span>
+                        <span>1</span>
+                    </div>
+                    <div>
+                        <div class="coordinates">
+                            <span>а</span>
+                            <span>б</span>
+                            <span>в</span>
+                            <span>г</span>
+                            <span>д</span>
+                            <span>е</span>
+                            <span>ж</span>
+                            <span>з</span>
+                        </div>
+                        <div class="board" id="gameBoard"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="button-group">
+                    <button id="resignButton" class="button button-danger" disabled>
+                        <i class="fas fa-flag"></i> Сдаться
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rules">
+            <h2><i class="fas fa-book"></i> Правила игры</h2>
+            <p><strong>1. Цель игры:</strong> Уничтожить все шашки соперника или заблокировать их, чтобы соперник не мог сделать ход.</p>
+            <p><strong>2. Игровая доска:</strong> Игра проходит на доске 8x8 клеток. Только темные клетки используются для игры. Доска расположена так, чтобы угловое поле внизу слева со стороны игрока было тёмным.</p>
+            <p><strong>3. Начальная расстановка:</strong> Каждый игрок начинает с 12 шашками, расположенными на темных клетках первых трех рядов своего поля.</p>
+            <p><strong>4. Ходы:</strong></p>
+            <ul>
+                <li>Шашки ходят только по клеткам тёмного цвета.</li>
+                <li>Простая шашка ходит по диагонали на одну клетку вперед.</li>
+                <li>Простая шашка бьёт вперёд и назад, прыгая через шашку соперника на свободную клетку.</li>
+                <li>Дамка ходит и бьёт на любое поле диагонали.</li>
+                <li>Во время боя простая шашка может превратиться в дамку и сразу продолжить бой по правилам дамки.</li>
+                <li>При наличии нескольких вариантов боя можно выбрать любой из них.</li>
+            </ul>
+            <p><strong>5. Победа:</strong> Игрок выигрывает, если:</p>
+            <ul>
+                <li>Уничтожил все шашки соперника.</li>
+                <li>Соперник не может сделать ход.</li>
+                <li>Соперник сдается.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Инициализация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-qRTFlszcMafJv1eesYg-PUxsxYoo28U",
+            authDomain: "misha-and-anna-48e4c.firebaseapp.com",
+            databaseURL: "https://misha-and-anna-48e4c-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "misha-and-anna-48e4c",
+            storageBucket: "misha-and-anna-48e4c.firebasestorage.app",
+            messagingSenderId: "822036073579",
+            appId: "1:822036073579:web:cd59fd4f5362b5f0bb752e",
+            measurementId: "G-XR86X6PXMX"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // Глобальные переменные
+        let playerName = '';
+        let playerId = '';
+        let gameId = '';
+        let playerColor = null;
+        let myTurn = false;
+        let gameStarted = false;
+        let selectedPiece = null;
+        let possibleMoves = [];
+        let board = [];
+        
+        // Элементы DOM
+        const playerNameInput = document.getElementById('playerName');
+        const joinGameButton = document.getElementById('joinGame');
+        const messageElement = document.getElementById('message');
+        const gameInfoElement = document.getElementById('gameInfo');
+        const gameBoardElement = document.getElementById('gameBoard');
+        const resignButton = document.getElementById('resignButton');
+        
+        // Инициализация доски
+        function initializeBoard() {
+            board = Array(8).fill().map(() => Array(8).fill(null));
+            gameBoardElement.innerHTML = '';
+            
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = `cell ${(row + col) % 2 === 0 ? 'light' : 'dark'}`;
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    if ((row + col) % 2 === 1) {
+                        cell.addEventListener('click', () => handleCellClick(row, col));
+                        
+                        if (row < 3) {
+                            board[row][col] = { color: 'black', isKing: false };
+                            const piece = document.createElement('div');
+                            piece.className = 'piece black';
+                            cell.appendChild(piece);
+                        } else if (row > 4) {
+                            board[row][col] = { color: 'white', isKing: false };
+                            const piece = document.createElement('div');
+                            piece.className = 'piece white';
+                            cell.appendChild(piece);
+                        }
+                    }
+                    
+                    gameBoardElement.appendChild(cell);
+                }
+            }
+        }
+        
+        // Обработка клика по клетке
+        function handleCellClick(row, col) {
+            if (!gameStarted || !myTurn || (row + col) % 2 === 0) return;
+            
+            if (selectedPiece) {
+                if (possibleMoves.some(move => move.row === row && move.col === col)) {
+                    makeMove(selectedPiece.row, selectedPiece.col, row, col);
+                } else {
+                    clearSelection();
+                }
+            }
+            
+            if (board[row][col] && board[row][col].color === playerColor) {
+                selectedPiece = { row, col };
+                possibleMoves = getPossibleMoves(row, col);
+                updateBoardUI();
+            }
+        }
+        
+        // Получение возможных ходов
+        function getPossibleMoves(row, col) {
+            const piece = board[row][col];
+            const moves = [];
+            const captures = [];
+            
+            if (!piece) return moves;
+            
+            // Направления для ходов и боев
+            const directions = [
+                [-1, -1], [-1, 1], [1, -1], [1, 1]
+            ];
+            
+            // Проверка возможности боя
+            for (const [dr, dc] of directions) {
+                let r = row + dr;
+                let c = col + dc;
+                
+                // Для дамки проверяем всю диагональ
+                if (piece.isKing) {
+                    while (isValidCell(r, c) && !board[r][c]) {
+                        moves.push({ row: r, col: c, capture: false });
+                        r += dr;
+                        c += dc;
+                    }
+                    
+                    // Проверка боя для дамки
+                    if (isValidCell(r, c) && board[r][c] && board[r][c].color !== piece.color) {
+                        let nextR = r + dr;
+                        let nextC = c + dc;
+                        while (isValidCell(nextR, nextC) && !board[nextR][nextC]) {
+                            captures.push({ 
+                                row: nextR, 
+                                col: nextC, 
+                                capture: true, 
+                                captured: { row: r, col: c }
+                            });
+                            nextR += dr;
+                            nextC += dc;
+                        }
+                    }
+                } else {
+                    // Простая шашка: ходы только вперед
+                    if ((piece.color === 'white' && dr < 0) || (piece.color === 'black' && dr > 0)) {
+                        if (isValidCell(r, c) && !board[r][c]) {
+                            moves.push({ row: r, col: c, capture: false });
+                        }
+                    }
+                    
+                    // Простая шашка: бой вперед и назад
+                    if (isValidCell(r, c) && board[r][c] && board[r][c].color !== piece.color) {
+                        let nextR = r + dr;
+                        let nextC = c + dc;
+                        if (isValidCell(nextR, nextC) && !board[nextR][nextC]) {
+                            captures.push({ 
+                                row: nextR, 
+                                col: nextC, 
+                                capture: true, 
+                                captured: { row: r, col: c }
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Если есть возможность боя—A обязательный ход
+            return captures.length > 0 ? captures : moves;
+        }
+        
+        // Проверка валидности клетки
+        function isValidCell(row, col) {
+            return row >= 0 && row < 8 && col >= 0 && col < 8 && (row + col) % 2 === 1;
+        }
+        
+        // Выполнение хода
+        function makeMove(fromRow, fromCol, toRow, toCol) {
+            const move = possibleMoves.find(m => m.row === toRow && m.col === toCol);
+            const piece = board[fromRow][fromCol];
+            
+            // Анимация перемещения
+            const fromCell = gameBoardElement.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"] .piece`);
+            if (fromCell) {
+                fromCell.classList.add('moving');
+                setTimeout(() => fromCell.classList.remove('moving'), 300);
+            }
+            
+            // Анимация захвата
+            if (move && move.capture) {
+                const capturedCell = gameBoardElement.querySelector(`[data-row="${move.captured.row}"][data-col="${move.captured.col}"] .piece`);
+                if (capturedCell) {
+                    capturedCell.classList.add('captured');
+                    setTimeout(() => capturedCell.remove(), 300);
+                }
+            }
+            
+            // Перемещение шашки
+            board[toRow][toCol] = piece;
+            board[fromRow][fromCol] = null;
+            
+            if (move && move.capture) {
+                board[move.captured.row][move.captured.col] = null;
+            }
+            
+            // Проверка на превращение в дамку
+            const isPromoted = (piece.color === 'white' && toRow === 0) || (piece.color === 'black' && toRow === 7);
+            if (isPromoted) {
+                piece.isKing = true;
+            }
+            
+            // Сохранение хода в Firebase
+            database.ref(`games/${gameId}/moves`).push({
+                playerId: playerId,
+                from: { row: fromRow, col: fromCol },
+                to: { row: toRow, col: toCol },
+                capture: move && move.capture ? move.captured : null,
+                promoted: isPromoted,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            
+            // Проверка на продолжение боя
+            let moreCaptures = [];
+            if (move && move.capture) {
+                moreCaptures = getPossibleMoves(toRow, toCol).filter(m => m.capture);
+            }
+            
+            if (!move || !move.capture || !moreCaptures.length) {
+                myTurn = false;
+                updateGameInfo();
+                clearSelection();
+            } else {
+                // Продолжаем ход, если есть дополнительные бои
+                selectedPiece = { row: toRow, col: toCol };
+                possibleMoves = moreCaptures;
+            }
+            
+            updateBoardUI();
+            checkGameEnd();
+        }
+        
+        // Обновление интерфейса доски
+        function updateBoardUI() {
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = gameBoardElement.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    cell.innerHTML = '';
+                    cell.classList.remove('selectable', 'selected');
+                    
+                    if (board[row][col]) {
+                        const piece = document.createElement('div');
+                        piece.className = `piece ${board[row][col].color} ${board[row][col].isKing ? 'king' : ''}`;
+                        cell.appendChild(piece);
+                    }
+                    
+                    if (selectedPiece && row === selectedPiece.row && col === selectedPiece.col) {
+                        cell.classList.add('selected');
+                    }
+                    
+                    if (possibleMoves.some(move => move.row === row && move.col === col)) {
+                        cell.classList.add('selectable');
+                    }
+                }
+            }
+        }
+        
+        // Очистка выбора
+        function clearSelection() {
+            selectedPiece = null;
+            possibleMoves = [];
+            updateBoardUI();
+        }
+        
+        // Проверка окончания игры
+        function checkGameEnd() {
+            const opponentColor = playerColor === 'white' ? 'black' : 'white';
+            let hasPieces = false;
+            let hasMoves = false;
+            
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    if (board[row][col] && board[row][col].color === opponentColor) {
+                        hasPieces = true;
+                        if (getPossibleMoves(row, col).length > 0) {
+                            hasMoves = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasMoves) break;
+            }
+            
+            if (!hasPieces || !hasMoves) {
+                database.ref(`games/${gameId}`).update({
+                    winner: playerId,
+                    endTime: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'finished'
+                });
+            }
+        }
+        
+        // Присоединение к игре
+        function joinGame() {
+            playerName = playerNameInput.value.trim();
+            
+            if (!playerName) {
+                showMessage('Пожалуйста, введите ваше имя', 'error');
+                return;
+            }
+            
+            const gamesRef = database.ref('games');
+            gamesRef.once('value').then((snapshot) => {
+                let availableGame = null;
+                
+                snapshot.forEach((gameSnapshot) => {
+                    const game = gameSnapshot.val();
+                    if (game.players && Object.keys(game.players).length < 2 && !game.started) {
+                        availableGame = { id: gameSnapshot.key, data: game };
+                        return true;
+                    }
+                });
+                
+                if (!availableGame) {
+                    const newGameRef = gamesRef.push();
+                    gameId = newGameRef.key;
+                    
+                    const playerRef = database.ref(`games/${gameId}/players`).push({
+                        name: playerName,
+                        color: 'white',
+                        joined: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    
+                    playerId = playerRef.key;
+                    playerColor = 'white';
+                    showMessage(`Создана новая игра. Ожидание соперника...`, 'info');
+                } else {
+                    gameId = availableGame.id;
+                    
+                    const playerRef = database.ref(`games/${gameId}/players`).push({
+                        name: playerName,
+                        color: 'black',
+                        joined: firebase.database.ServerValue.TIMESTAMP
+                    });
+                    
+                    playerId = playerRef.key;
+                    playerColor = 'black';
+                    showMessage(`Вы присоединились к игре с ${Object.values(availableGame.data.players)[0].name}`, 'info');
+                }
+                
+                playerNameInput.disabled = true;
+                joinGameButton.disabled = true;
+                
+                listenForGameChanges();
+            });
+        }
+        
+        // Слушатель изменений в игре
+        function listenForGameChanges() {
+            const gameRef = database.ref(`games/${gameId}`);
+            
+            gameRef.child('players').on('value', (snapshot) => {
+                const players = snapshot.val();
+                
+                if (players && Object.keys(players).length === 2) {
+                    const opponent = Object.entries(players).find(([id, _]) => id !== playerId);
+                    if (opponent) {
+                        const [_, opponentData] = opponent;
+                        gameInfoElement.innerHTML = `<i class="fas fa-user-friends"></i> Ваш соперник: ${opponentData.name}`;
+                    }
+                    
+                    if (!gameStarted) {
+                        startGame();
+                    }
+                }
+            });
+            
+            gameRef.child('moves').on('child_added', (snapshot) => {
+                const move = snapshot.val();
+                
+                if (move.playerId !== playerId) {
+                    // Анимация перемещения для хода соперника
+                    const fromCell = gameBoardElement.querySelector(`[data-row="${move.from.row}"][data-col="${move.from.col}"] .piece`);
+                    if (fromCell) {
+                        fromCell.classList.add('moving');
+                        setTimeout(() => fromCell.classList.remove('moving'), 300);
+                    }
+                    
+                    // Анимация захвата для хода соперника
+                    if (move.capture) {
+                        const capturedCell = gameBoardElement.querySelector(`[data-row="${move.capture.row}"][data-col="${move.capture.col}"] .piece`);
+                        if (capturedCell) {
+                            capturedCell.classList.add('captured');
+                            setTimeout(() => capturedCell.remove(), 300);
+                        }
+                    }
+                    
+                    board[move.to.row][move.to.col] = board[move.from.row][move.from.col];
+                    board[move.from.row][move.from.col] = null;
+                    
+                    if (move.capture) {
+                        board[move.capture.row][move.capture.col] = null;
+                    }
+                    
+                    if (move.promoted) {
+                        board[move.to.row][move.to.col].isKing = true;
+                    }
+                    
+                    // Проверка на продолжение боя
+                    let moreCaptures = getPossibleMoves(move.to.row, move.to.col).filter(m => m.capture);
+                    if (!move.capture || !moreCaptures.length) {
+                        myTurn = true;
+                    }
+                    
+                    updateBoardUI();
+                    updateGameInfo();
+                    checkGameEnd();
+                }
+            });
+            
+            gameRef.child('status').on('value', (snapshot) => {
+                const status = snapshot.val();
+                
+                if (status === 'finished') {
+                    gameRef.child('winner').once('value').then((winnerSnapshot) => {
+                        const winnerId = winnerSnapshot.val();
+                        
+                        if (winnerId === playerId) {
+                            showMessage('Поздравляем! Вы победили!', 'success');
+                            gameInfoElement.innerHTML = '<i class="fas fa-trophy"></i> Вы победили!';
+                        } else {
+                            showMessage('Вы проиграли.', 'error');
+                            gameInfoElement.innerHTML = '<i class="fas fa-skull-crossbones"></i> Вы проиграли!';
+                        }
+                        
+                        myTurn = false;
+                        resignButton.disabled = true;
+                    });
+                }
+            });
+        }
+        
+        // Начало игры
+        function startGame() {
+            gameStarted = true;
+            myTurn = playerColor === 'white';
+            resignButton.disabled = false;
+            
+            database.ref(`games/${gameId}`).update({
+                started: true,
+                startTime: firebase.database.ServerValue.TIMESTAMP,
+                status: 'started',
+                currentTurn: 'white'
+            });
+            
+            updateGameInfo();
+            showMessage('Игра началась!', 'success');
+        }
+        
+        // Обновление информации о состоянии игры
+        function updateGameInfo() {
+            if (gameStarted) {
+                if (myTurn) {
+                    gameInfoElement.innerHTML = `<i class="fas fa-crosshairs"></i> Ваш ход! Вы играете ${playerColor === 'white' ? 'белыми' : 'черными'}`;
+                } else {
+                    gameInfoElement.innerHTML = '<i class="fas fa-hourglass"></i> Ход соперника, ожидайте';
+                }
+            }
+        }
+        
+        // Отображение сообщения
+        function showMessage(text, type = 'info') {
+            messageElement.textContent = text;
+            messageElement.className = `message ${type} visible`;
+            
+            setTimeout(() => {
+                messageElement.classList.remove('visible');
+            }, 5000);
+        }
+        
+        // Сдача игры
+        function resign() {
+            database.ref(`games/${gameId}`).update({
+                winner: Object.keys(database.ref(`games/${gameId}/players`).val()).find(id => id !== playerId),
+                endTime: firebase.database.ServerValue.TIMESTAMP,
+                status: 'finished'
+            });
+        }
+        
+        // Обработчики событий
+        joinGameButton.addEventListener('click', joinGame);
+        resignButton.addEventListener('click', resign);
+        
+        // Инициализация
+        initializeBoard();
+    </script>
+</body>
+</html>

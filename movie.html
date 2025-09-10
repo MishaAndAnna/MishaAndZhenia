@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат с Firebase и просмотр фильмов</title>
+    <style>
+        :root {
+            --bg-primary: #06080f;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --accent-primary: #06b6d4;
+            --accent-secondary: #3b82f6;
+            --accent-tertiary: #8b5cf6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --glow-primary: rgba(6, 182, 212, 0.5);
+            --glow-secondary: rgba(59, 130, 246, 0.5);
+            --gradient-bg: linear-gradient(to bottom right, var(--bg-primary), var(--bg-secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --gradient-accent-hover: linear-gradient(135deg, var(--accent-secondary), var(--accent-tertiary));
+            --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+            --border-radius-sm: 0.75rem;
+            --border-radius-md: 1rem;
+            --border-radius-lg: 1.5rem;
+            --border-radius-full: 9999px;
+            --space-xs: 0.5rem;
+            --space-sm: 0.75rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.25), 0 8px 16px -8px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+            --shadow-glow: 0 0 15px var(--glow-primary);
+            --font-primary: 'Inter', 'SF Pro Text', -apple-system, system-ui, sans-serif;
+            --font-display: 'Clash Display', 'Ginto Nord', 'SF Pro Display', sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --transition-fast: 0.15s cubic-bezier(0.3, 0, 0.8, 1);
+            --transition-normal: 0.25s cubic-bezier(0.3, 0, 0.8, 1);
+            --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --container-width: 1800px;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-tertiary: #e2e8f0;
+            --accent-primary: #0891b2;
+            --accent-secondary: #2563eb;
+            --accent-tertiary: #7c3aed;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --glow-primary: rgba(8, 145, 178, 0.25);
+            --glow-secondary: rgba(37, 99, 235, 0.25);
+            --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.04);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(6, 182, 212, 0.1), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.1), transparent 40%),
+                var(--gradient-bg);
+            background-attachment: fixed;
+            min-height: 100vh;
+            line-height: 1.6;
+            padding: var(--space-lg);
+            transition: background-color var(--transition-slow);
+            overflow-x: hidden;
+        }
+
+        a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        a:hover {
+            color: var(--accent-secondary);
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            height: calc(100vh - 2 * var(--space-lg));
+            position: relative;
+        }
+
+        .movie-container {
+            position: relative;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            height: 100%;
+            box-shadow: var(--shadow-lg);
+            isolation: isolate;
+            transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+        }
+
+        .movie-container:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .movie-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .movie-container::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background: var(--gradient-accent);
+            border-radius: var(--border-radius-full);
+            filter: blur(1px);
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: black;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            object-fit: contain;
+        }
+
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            isolation: isolate;
+        }
+
+        .chat-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .chat-header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-lg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-accent);
+            opacity: 0.6;
+            filter: blur(2px);
+        }
+
+        .chat-title {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 600;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            position: relative;
+        }
+
+        .theme-toggle-btn {
+            position: relative;
+            background: none;
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            font-weight: 500;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            border-radius: var(--border-radius-full);
+            cursor: pointer;
+            overflow: hidden;
+            isolation: isolate;
+            user-select: none;
+        }
+
+        .theme-toggle-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-glass);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: inherit;
+            z-index: -1;
+            transition: all var(--transition-normal);
+        }
+
+        .theme-toggle-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-accent);
+            border-radius: inherit;
+            z-index: -2;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+
+        .theme-toggle-btn:hover::before {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle-btn:hover::after {
+            opacity: 0.7;
+        }
+
+        .theme-toggle-btn:active {
+            transform: translateY(1px);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: var(--space-lg);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-primary) transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-full);
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--border-radius-full);
+        }
+
+        .message {
+            position: relative;
+            max-width: 80%;
+            margin-bottom: var(--space-md);
+            transform-origin: bottom;
+            animation: messageSlide 0.4s var(--transition-normal);
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            --message-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            --message-color: var(--text-primary);
+            --message-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message.received {
+            align-self: flex-start;
+            --message-gradient: var(--gradient-glass);
+            --message-color: var(--text-primary);
+            --message-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message-content {
+            position: relative;
+            padding: var(--space-lg);
+            border-radius: var(--border-radius-md);
+            color: var(--message-color);
+            font-size: 1rem;
+            line-height: 1.6;
+            overflow: hidden;
+            isolation: isolate;
+            z-index: 1;
+        }
+
+        .message-content::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--message-gradient);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--message-border);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .message.sent .message-content {
+            border-bottom-right-radius: 0;
+            color: white;
+        }
+
+        .message.received .message-content {
+            border-bottom-left-radius: 0;
+        }
+
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            z-index: 0;
+        }
+
+        .message.sent::after {
+            right: -8px;
+            border-right: 10px solid transparent;
+            border-top: 10px solid transparent;
+            border-left: 10px solid var(--accent-secondary);
+            border-bottom: 10px solid transparent;
+            transform: rotate(-45deg);
+        }
+
+        .message.received::after {
+            left: -8px;
+            border-right: 10px solid transparent;
+            border-top: 10px solid transparent;
+            border-left: 10px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 10px solid transparent;
+            transform: rotate(135deg);
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: 0.85rem;
+            margin-top: var(--space-xs);
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .chat-input-container {
+            position: relative;
+            margin: var(--space-lg);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            isolation: isolate;
+            transition: transform var(--transition-normal);
+        }
+
+        .chat-input-container:focus-within {
+            transform: translateY(-2px);
+        }
+
+        .chat-input-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .chat-input-container:focus-within::before {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 1px var(--accent-primary), var(--shadow-glow);
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: var(--space-lg);
+            padding-right: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: var(--font-primary);
+            resize: none;
+            line-height: 1.5;
+        }
+
+        .chat-input:focus {
+            outline: none;
+        }
+
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        #sendBtn, #sendBtnFullscreen {
+            position: absolute;
+            right: var(--space-md);
+            bottom: var(--space-md);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            isolation: isolate;
+            transition: all var(--transition-normal);
+        }
+
+        #sendBtn::before, #sendBtnFullscreen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-accent);
+            border-radius: inherit;
+            z-index: -1;
+            transition: all var(--transition-normal);
+        }
+
+        #sendBtn::after, #sendBtnFullscreen::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 18px;
+            height: 18px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: translate(-75%, -50%) rotate(-45deg);
+            transition: all var(--transition-normal);
+        }
+
+        #sendBtn:hover::before, #sendBtnFullscreen:hover::before {
+            background: var(--gradient-accent-hover);
+        }
+
+        #sendBtn:hover::after, #sendBtnFullscreen:hover::after {
+            transform: translate(-60%, -50%) rotate(-45deg);
+        }
+
+        #sendBtn:active, #sendBtnFullscreen:active {
+            transform: scale(0.95);
+        }
+
+        .styled-button {
+            position: relative;
+            padding: var(--space-md) var(--space-xl);
+            border: none;
+            border-radius: var(--border-radius-full);
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background: transparent;
+            cursor: pointer;
+            overflow: hidden;
+            isolation: isolate;
+            transition: transform var(--transition-normal);
+        }
+
+        .styled-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient-accent);
+            border-radius: inherit;
+            z-index: -1;
+            transition: all var(--transition-normal);
+        }
+
+        .styled-button::after {
+            content: '';
+            position: absolute;
+            inset: -100% -200%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            z-index: -1;
+            transition: all var(--transition-normal);
+        }
+
+        .styled-button:hover {
+            transform: translateY(-3px);
+        }
+
+        .styled-button:hover::before {
+            filter: brightness(1.1);
+        }
+
+        .styled-button:hover::after {
+            transform: rotate(45deg) translateX(100%);
+        }
+
+        .styled-button:active {
+            transform: translateY(-1px);
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            z-index: 10;
+        }
+
+        .chat-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .chat-overlay.active {
+            display: block;
+        }
+
+        .chat-toggle-btn {
+            position: absolute;
+            top: var(--space-md);
+            right: var(--space-md);
+            pointer-events: auto;
+        }
+
+        .fullscreen-chat {
+            position: absolute;
+            right: var(--space-md);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 400px;
+            max-height: 80%;
+            display: none;
+            pointer-events: auto;
+            transition: transform var(--transition-normal);
+        }
+
+        .fullscreen-chat.active {
+            display: flex;
+        }
+
+        body.fullscreen .container > .chat-box {
+            display: none;
+        }
+
+        body.fullscreen .movie-container {
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            margin: 0;
+            z-index: 1000;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+                height: auto;
+                gap: var(--space-lg);
+            }
+            .movie-container, .chat-box { height: 600px; }
+        }
+
+        @media (max-width: 768px) {
+            :root { --space-lg: 1rem; --space-xl: 1.5rem; }
+            body { padding: var(--space-md); }
+            .container { gap: var(--space-lg); }
+            .chat-title { font-size: 1.5rem; }
+            .movie-container, .chat-box { height: 500px; }
+            .message { max-width: 90%; }
+            .message-content { padding: var(--space-md); }
+            .fullscreen-chat { width: 300px; }
+        }
+
+        @media (max-width: 480px) {
+            .movie-container, .chat-box { height: 400px; }
+            .chat-title { font-size: 1.25rem; }
+            .fullscreen-chat { width: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="movie-container" id="movieContainer">
+            <button id="fullscreenBtn" class="styled-button fullscreen-btn">Полный экран</button>
+            <div class="chat-overlay" id="chatOverlay">
+                <button id="toggleChatBtn" class="styled-button chat-toggle-btn">Показать чат</button>
+                <div class="chat-box fullscreen-chat" id="fullscreenChatBox">
+                    <div class="chat-header">
+                        <div class="chat-title">Чат</div>
+                        <button class="theme-toggle-btn" id="themeToggleBtnFullscreen">Переключить тему</button>
+                    </div>
+                    <div class="chat-messages" id="messagesFullscreen"></div>
+                    <div class="chat-input-container">
+                        <textarea id="messageInputFullscreen" class="chat-input" placeholder="Введите сообщение..."></textarea>
+                        <button id="sendBtnFullscreen" class="send-btn">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-box" id="defaultChatBox">
+            <div class="chat-header">
+                <div class="chat-title">Чат</div>
+                <button class="theme-toggle-btn" id="themeToggleBtn">Переключить тему</button>
+            </div>
+            <div class="chat-messages" id="messages"></div>
+            <div class="chat-input-container">
+                <textarea id="messageInput" class="chat-input" placeholder="Введите сообщение..."></textarea>
+                <button id="sendBtn" class="send-btn">Отправить</button>
+            </div>
+            <div id="chatControls" style="margin: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-md);"></div>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { 
+        getDatabase, 
+        ref, 
+        push, 
+        onValue, 
+        set,
+        remove
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA-qRTFlszcMafJv1eesYg-PUxsxYoo28U",
+        authDomain: "misha-and-anna-48e4c.firebaseapp.com",
+        databaseURL: "https://misha-and-anna-48e4c-default-rtdb.europe-west1.firebasedatabase.app/",
+        projectId: "misha-and-anna-48e4c",
+        storageBucket: "misha-and-anna-48e4c.appspot.com",
+        messagingSenderId: "822036073579",
+        appId: "1:822036073579:web:cd59fd4f5362b5f0bb752e",
+        measurementId: "G-XR86X6PXMX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const messagesRef = ref(db, 'messages');
+    const signalingRef = ref(db, 'signaling');
+
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const messagesContainer = document.getElementById('messages');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const movieContainer = document.getElementById('movieContainer');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const toggleChatBtn = document.getElementById('toggleChatBtn');
+    const fullscreenChatBox = document.getElementById('fullscreenChatBox');
+    const messageInputFullscreen = document.getElementById('messageInputFullscreen');
+    const sendBtnFullscreen = document.getElementById('sendBtnFullscreen');
+    const messagesFullscreen = document.getElementById('messagesFullscreen');
+    const themeToggleBtnFullscreen = document.getElementById('themeToggleBtnFullscreen');
+    const chatControls = document.getElementById('chatControls');
+
+    let username = prompt("Введите ваше имя:").trim();
+    const isHost = username.toLowerCase() === "михаил";
+    while (!username) {
+        username = prompt("Имя не может быть пустым. Введите ваше имя:").trim();
+    }
+
+    // Инициализация интерфейса
+    function initializeInterface() {
+        const video = document.createElement('video');
+        video.id = 'screenShareVideo';
+        video.autoplay = true;
+        video.playsinline = true;
+        video.muted = isHost; // Хост не слышит собственный звук, чтобы избежать эха
+        movieContainer.appendChild(video);
+        fullscreenBtn.style.display = 'block';
+
+        if (isHost) {
+            chatControls.innerHTML = `
+                <button id="startShareBtn" class="styled-button">Начать трансляцию</button>
+                <button id="stopShareBtn" class="styled-button" style="display: none;">Остановить трансляцию</button>
+                <button onclick="window.location.href='index.html';" class="styled-button">Вернуться на главную</button>
+            `;
+            document.getElementById('startShareBtn').addEventListener('click', startScreenShare);
+            document.getElementById('stopShareBtn').addEventListener('click', stopScreenShare);
+        } else {
+            chatControls.innerHTML = `
+                <button id="startPlaybackBtn" class="styled-button">Подключиться к трансляции</button>
+                <button onclick="window.location.href='index.html';" class="styled-button">Вернуться на главную</button>
+            `;
+            document.getElementById('startPlaybackBtn').addEventListener('click', startPlayback);
+        }
+    }
+
+    initializeInterface();
+    const screenShareVideo = document.getElementById('screenShareVideo');
+
+    // Рендеринг сообщений чата
+    function renderMessages(messagesContainerTarget) {
+        return function(snapshot) {
+            messagesContainerTarget.innerHTML = '';
+            const messages = snapshot.val();
+            if (messages) {
+                Object.entries(messages).forEach(([id, message]) => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = message.sender === username ? 'message sent' : 'message received';
+                    const time = new Date(message.timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                    messageElement.innerHTML = `
+                        <div class="message-content">${message.text}</div>
+                        <div class="message-meta">
+                            <span>${message.sender}</span>
+                            <span>${time}</span>
+                        </div>
+                    `;
+                    messagesContainerTarget.appendChild(messageElement);
+                });
+                messagesContainerTarget.scrollTop = messagesContainerTarget.scrollHeight;
+            }
+        };
+    }
+
+    onValue(messagesRef, renderMessages(messagesContainer));
+    onValue(messagesRef, renderMessages(messagesFullscreen));
+
+    // Отправка сообщений
+    async function sendMessage(inputElement) {
+        const message = inputElement.value.trim();
+        if (message) {
+            const messageData = { sender: username, text: message, timestamp: Date.now() };
+            try {
+                const newMessageRef = push(messagesRef);
+                await set(newMessageRef, messageData);
+                inputElement.value = '';
+            } catch (error) {
+                console.error('Ошибка при отправке сообщения:', error);
+                alert('Не удалось отправить сообщение');
+            }
+        }
+    }
+
+    sendBtn.addEventListener('click', () => sendMessage(messageInput));
+    sendBtnFullscreen.addEventListener('click', () => sendMessage(messageInputFullscreen));
+    messageInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage(messageInput);
+        }
+    });
+    messageInputFullscreen.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage(messageInputFullscreen);
+        }
+    });
+
+    // WebRTC логика
+    let localStream;
+    let peerConnection;
+    const peerConnectionConfig = {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun3.l.google.com:19302' },
+            { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+            { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+            { urls: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc' },
+            { urls: 'turn:relay1.expery.io:443', username: 'testuser', credential: 'testpassword' }
+        ],
+        iceTransportPolicy: 'all',
+        iceCandidatePoolSize: 10
+    };
+
+    async function startScreenShare() {
+        if (!isHost) {
+            alert("Только Михаил может начать трансляцию!");
+            return;
+        }
+        try {
+            console.log('Хост: Начало трансляции');
+            await remove(signalingRef); // Очистка предыдущих данных
+            localStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+            screenShareVideo.srcObject = localStream;
+            screenShareVideo.play().catch(error => console.error('Хост: Ошибка воспроизведения локального видео:', error));
+
+            peerConnection = new RTCPeerConnection(peerConnectionConfig);
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+                console.log('Хост: Добавлен трек:', track.kind);
+            });
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    console.log('Хост: Отправка ICE кандидата:', event.candidate);
+                    set(push(ref(db, 'signaling/candidates')), { type: 'candidate', candidate: event.candidate, sender: username });
+                }
+            };
+
+            peerConnection.oniceconnectionstatechange = () => {
+                console.log('Хост: ICE состояние:', peerConnection.iceConnectionState);
+                if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+                    stopScreenShare();
+                    alert('Трансляция прервана. Попробуйте начать заново.');
+                } else if (peerConnection.iceConnectionState === 'connected') {
+                    console.log('Хост: Соединение установлено');
+                }
+            };
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            console.log('Хост: Отправка offer:', offer);
+            await set(ref(db, 'signaling/offer'), { type: 'offer', sdp: offer, sender: username });
+
+            // Ожидание ответа от клиента
+            onValue(ref(db, 'signaling/answer'), async (snapshot) => {
+                const answerData = snapshot.val();
+                if (answerData && answerData.sender !== username && !peerConnection.remoteDescription) {
+                    console.log('Хост: Получен answer:', answerData.sdp);
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(answerData.sdp));
+                }
+            });
+
+            // Ожидание ICE-кандидатов от клиента
+            onValue(ref(db, 'signaling/candidates'), (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+                Object.values(data).forEach(async (signal) => {
+                    if (signal.sender === username || signal.type !== 'candidate' || !signal.candidate) return;
+                    if (peerConnection && peerConnection.remoteDescription) {
+                        try {
+                            console.log('Хост: Добавление ICE кандидата от клиента:', signal.candidate);
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                        } catch (error) {
+                            console.error('Хост: Ошибка добавления ICE кандидата:', error);
+                        }
+                    }
+                });
+            });
+
+            localStream.getTracks().forEach(track => {
+                track.onended = () => {
+                    console.log('Хост: Трек завершён');
+                    stopScreenShare();
+                };
+            });
+
+            document.getElementById('startShareBtn').style.display = 'none';
+            document.getElementById('stopShareBtn').style.display = 'block';
+        } catch (error) {
+            console.error('Хост: Ошибка захвата экрана:', error);
+            alert('Не удалось начать трансляцию: ' + error.message);
+        }
+    }
+
+    async function stopScreenShare() {
+        console.log('Хост: Остановка трансляции');
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+        }
+        if (peerConnection) {
+            peerConnection.close();
+        }
+        await remove(signalingRef);
+        screenShareVideo.srcObject = null;
+        document.getElementById('startShareBtn').style.display = 'block';
+        document.getElementById('stopShareBtn').style.display = 'none';
+    }
+
+    async function startPlayback() {
+        if (isHost) return;
+
+        console.log('Клиент: Начало подключения к трансляции');
+        peerConnection = new RTCPeerConnection(peerConnectionConfig);
+
+        peerConnection.ontrack = (event) => {
+            console.log('Клиент: Получен трек:', event.track.kind);
+            if (!screenShareVideo.srcObject) {
+                screenShareVideo.srcObject = event.streams[0];
+                screenShareVideo.play().catch(error => {
+                    console.error('Клиент: Ошибка воспроизведения:', error);
+                    alert('Не удалось воспроизвести видео: ' + error.message);
+                });
+            }
+        };
+
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                console.log('Клиент: Отправка ICE кандидата:', event.candidate);
+                set(push(ref(db, 'signaling/candidates')), { type: 'candidate', candidate: event.candidate, sender: username });
+            }
+        };
+
+        peerConnection.oniceconnectionstatechange = () => {
+            console.log('Клиент: ICE состояние:', peerConnection.iceConnectionState);
+            if (peerConnection.iceConnectionState === 'disconnected' || peerConnection.iceConnectionState === 'failed') {
+                screenShareVideo.srcObject = null;
+                document.getElementById('startPlaybackBtn').style.display = 'block';
+                alert('Трансляция отключена.');
+            } else if (peerConnection.iceConnectionState === 'connected') {
+                console.log('Клиент: Соединение установлено');
+                if (screenShareVideo.srcObject && screenShareVideo.paused) {
+                    screenShareVideo.play().catch(error => console.error('Клиент: Ошибка повторного воспроизведения:', error));
+                }
+            }
+        };
+
+        onValue(ref(db, 'signaling/offer'), async (snapshot) => {
+            const offerData = snapshot.val();
+            if (offerData && offerData.sender !== username && !peerConnection.remoteDescription) {
+                console.log('Клиент: Получен offer:', offerData.sdp);
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.sdp));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                console.log('Клиент: Отправка answer:', answer);
+                await set(ref(db, 'signaling/answer'), { type: 'answer', sdp: answer, sender: username });
+            }
+        });
+
+        onValue(ref(db, 'signaling/candidates'), (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+            Object.values(data).forEach(async (signal) => {
+                if (signal.sender === username || signal.type !== 'candidate' || !signal.candidate) return;
+                if (peerConnection && peerConnection.remoteDescription) {
+                    try {
+                        console.log('Клиент: Добавление ICE кандидата:', signal.candidate);
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                    } catch (error) {
+                        console.error('Клиент: Ошибка добавления ICE кандидата:', error);
+                    }
+                }
+            });
+        });
+
+        onValue(ref(db, 'signaling/offer'), (snapshot) => {
+            if (!snapshot.val()) {
+                console.log('Клиент: Трансляция завершена хостом');
+                screenShareVideo.srcObject = null;
+                document.getElementById('startPlaybackBtn').style.display = 'block';
+            }
+        });
+
+        document.getElementById('startPlaybackBtn').style.display = 'none';
+    }
+
+    // Полноэкранный режим
+    let isFullscreen = false;
+    fullscreenBtn.addEventListener('click', () => {
+        if (!isFullscreen) {
+            movieContainer.requestFullscreen();
+            document.body.classList.add('fullscreen');
+            chatOverlay.classList.add('active');
+            fullscreenBtn.textContent = 'Выход из полного экрана';
+            isFullscreen = true;
+        } else {
+            document.exitFullscreen();
+            document.body.classList.remove('fullscreen');
+            chatOverlay.classList.remove('active');
+            fullscreenChatBox.classList.remove('active');
+            fullscreenBtn.textContent = 'Полный экран';
+            toggleChatBtn.textContent = 'Показать чат';
+            isFullscreen = false;
+        }
+    });
+
+    toggleChatBtn.addEventListener('click', () => {
+        if (fullscreenChatBox.classList.contains('active')) {
+            fullscreenChatBox.classList.remove('active');
+            toggleChatBtn.textContent = 'Показать чат';
+        } else {
+            fullscreenChatBox.classList.add('active');
+            toggleChatBtn.textContent = 'Скрыть чат';
+        }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            document.body.classList.remove('fullscreen');
+            chatOverlay.classList.remove('active');
+            fullscreenChatBox.classList.remove('active');
+            fullscreenBtn.textContent = 'Полный экран';
+            toggleChatBtn.textContent = 'Показать чат';
+            isFullscreen = false;
+        }
+    });
+
+    // Переключение темы
+    function setupThemeToggle(btn, altBtn) {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            btn.textContent = 'Темная тема';
+            altBtn.textContent = 'Темная тема';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            btn.textContent = 'Светлая тема';
+            altBtn.textContent = 'Светлая тема';
+        }
+        btn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                btn.textContent = 'Светлая тема';
+                altBtn.textContent = 'Светлая тема';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                btn.textContent = 'Темная тема';
+                altBtn.textContent = 'Темная тема';
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setupThemeToggle(themeToggleBtn, themeToggleBtnFullscreen);
+    });
+</script>
+</body>
+</html>

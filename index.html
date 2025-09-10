@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Наш Личный Сайт</title>
+
+    <!-- Подключение библиотек -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #ff6b81;
+            --secondary-color: #7b68ee;
+            --accent-color: #40c4ff;
+            --text-color: #ffffff;
+            --text-dark: #1a1a1a;
+            --bg-light: rgba(255, 255, 255, 0.15);
+            --bg-dark: #1e1e2f;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --transition-duration: 0.4s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #2b1e66, #ff6b81);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body.dark-mode {
+            background: radial-gradient(circle, #1e1e2f, #2b2b4a);
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Loader Styles */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .wheel-and-hamster {
+            --dur: 1s;
+            position: relative;
+            width: 12em;
+            height: 12em;
+            font-size: 14px;
+        }
+
+        .wheel,
+        .hamster,
+        .hamster div,
+        .spoke {
+            position: absolute;
+        }
+
+        .wheel,
+        .spoke {
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wheel {
+            background: radial-gradient(100% 100% at center,hsla(0,0%,60%,0) 47.8%,hsl(0,0%,60%) 48%);
+            z-index: 2;
+        }
+
+        .hamster {
+            animation: hamster var(--dur) ease-in-out infinite;
+            top: 50%;
+            left: calc(50% - 3.5em);
+            width: 7em;
+            height: 3.75em;
+            transform: rotate(4deg) translate(-0.8em,1.85em);
+            transform-origin: 50% 0;
+            z-index: 1;
+        }
+
+        .hamster__head {
+            animation: hamsterHead var(--dur) ease-in-out infinite;
+            background: hsl(30,90%,55%);
+            border-radius: 70% 30% 0 100% / 40% 25% 25% 60%;
+            box-shadow: 0 -0.25em 0 hsl(30,90%,80%) inset,
+                0.75em -1.55em 0 hsl(30,90%,90%) inset;
+            top: 0;
+            left: -2em;
+            width: 2.75em;
+            height: 2.5em;
+            transform-origin: 100% 50%;
+        }
+
+        .hamster__ear {
+            animation: hamsterEar var(--dur) ease-in-out infinite;
+            background: hsl(0,90%,85%);
+            border-radius: 50%;
+            box-shadow: -0.25em 0 hsl(30,90%,55%) inset;
+            top: -0.25em;
+            right: -0.25em;
+            width: 0.75em;
+            height: 0.75em;
+            transform-origin: 50% 75%;
+        }
+
+        .hamster__eye {
+            animation: hamsterEye var(--dur) linear infinite;
+            background-color: hsl(0,0%,0%);
+            border-radius: 50%;
+            top: 0.375em;
+            left: 1.25em;
+            width: 0.5em;
+            height: 0.5em;
+        }
+
+        .hamster__nose {
+            background: hsl(0,90%,75%);
+            border-radius: 35% 65% 85% 15% / 70% 50% 50% 30%;
+            top: 0.75em;
+            left: 0;
+            width: 0.2em;
+            height: 0.25em;
+        }
+
+        .hamster__body {
+            animation: hamsterBody var(--dur) ease-in-out infinite;
+            background: hsl(30,90%,90%);
+            border-radius: 50% 30% 50% 30% / 15% 60% 40% 40%;
+            box-shadow: 0.1em 0.75em 0 hsl(30,90%,55%) inset,
+                0.15em -0.5em 0 hsl(30,90%,80%) inset;
+            top: 0.25em;
+            left: 2em;
+            width: 4.5em;
+            height: 3em;
+            transform-origin: 17% 50%;
+            transform-style: preserve-3d;
+        }
+
+        .hamster__limb--fr,
+        .hamster__limb--fl {
+            clip-path: polygon(0 0,100% 0,70% 80%,60% 100%,0% 100%,40% 80%);
+            top: 2em;
+            left: 0.5em;
+            width: 1em;
+            height: 1.5em;
+            transform-origin: 50% 0;
+        }
+
+        .hamster__limb--fr {
+            animation: hamsterFRLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,80%) 80%,hsl(0,90%,75%) 80%);
+            transform: rotate(15deg) translateZ(-1px);
+        }
+
+        .hamster__limb--fl {
+            animation: hamsterFLLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,90%) 80%,hsl(0,90%,85%) 80%);
+            transform: rotate(15deg);
+        }
+
+        .hamster__limb--br,
+        .hamster__limb--bl {
+            border-radius: 0.75em 0.75em 0 0;
+            clip-path: polygon(0 0,100% 0,100% 30%,70% 90%,70% 100%,30% 100%,40% 90%,0% 30%);
+            top: 1em;
+            left: 2.8em;
+            width: 1.5em;
+            height: 2.5em;
+            transform-origin: 50% 30%;
+        }
+
+        .hamster__limb--br {
+            animation: hamsterBRLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,80%) 90%,hsl(0,90%,75%) 90%);
+            transform: rotate(-25deg) translateZ(-1px);
+        }
+
+        .hamster__limb--bl {
+            animation: hamsterBLLimb var(--dur) linear infinite;
+            background: linear-gradient(hsl(30,90%,90%) 90%,hsl(0,90%,85%) 90%);
+            transform: rotate(-25deg);
+        }
+
+        .hamster__tail {
+            animation: hamsterTail var(--dur) linear infinite;
+            background: hsl(0,90%,85%);
+            border-radius: 0.25em 50% 50% 0.25em;
+            box-shadow: 0 -0.2em 0 hsl(0,90%,75%) inset;
+            top: 1.5em;
+            right: -0.5em;
+            width: 1em;
+            height: 0.5em;
+            transform: rotate(30deg) translateZ(-1px);
+            transform-origin: 0.25em 0.25em;
+        }
+
+        .spoke {
+            animation: spoke var(--dur) linear infinite;
+            background: radial-gradient(100% 100% at center,hsl(0,0%,60%) 4.8%,hsla(0,0%,60%,0) 5%),
+                linear-gradient(hsla(0,0%,55%,0) 46.9%,hsl(0,0%,65%) 47% 52.9%,hsla(0,0%,65%,0) 53%) 50% 50% / 99% 99% no-repeat;
+        }
+
+        /* Animations */
+        @keyframes hamster {
+            from, to {
+                transform: rotate(4deg) translate(-0.8em,1.85em);
+            }
+            50% {
+                transform: rotate(0) translate(-0.8em,1.85em);
+            }
+        }
+
+        @keyframes hamsterHead {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(0);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(8deg);
+            }
+        }
+
+        @keyframes hamsterEye {
+            from, 90%, to {
+                transform: scaleY(1);
+            }
+            95% {
+                transform: scaleY(0);
+            }
+        }
+
+        @keyframes hamsterEar {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(0);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(12deg);
+            }
+        }
+
+        @keyframes hamsterBody {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(0);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(-2deg);
+            }
+        }
+
+        @keyframes hamsterFRLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(50deg) translateZ(-1px);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(-30deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes hamsterFLLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(-30deg);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(50deg);
+            }
+        }
+
+        @keyframes hamsterBRLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(-60deg) translateZ(-1px);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(20deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes hamsterBLLimb {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(20deg);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(-60deg);
+            }
+        }
+
+        @keyframes hamsterTail {
+            from, 25%, 50%, 75%, to {
+                transform: rotate(30deg) translateZ(-1px);
+            }
+            12.5%, 37.5%, 62.5%, 87.5% {
+                transform: rotate(10deg) translateZ(-1px);
+            }
+        }
+
+        @keyframes spoke {
+            from {
+                transform: rotate(0);
+            }
+            to {
+                transform: rotate(-1turn);
+            }
+        }
+
+        #password-section {
+            margin-top: 100px;
+            text-align: center;
+            display: none;
+            opacity: 0;
+        }
+
+        #password-section.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        #password-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--text-color);
+            text-shadow: 0 0 8px var(--accent-color);
+            margin-bottom: 20px;
+        }
+
+        #notification {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--text-color);
+            text-shadow: 0 0 5px var(--accent-color);
+        }
+
+        #password {
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            width: 300px;
+            max-width: 100%;
+            transition: border-color var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+        }
+
+        #password:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-color);
+            outline: none;
+        }
+
+        #submit-password {
+            padding: 12px 24px;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+        }
+
+        #submit-password:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        #content-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        #content-section.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        #greeting {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--accent-color);
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInUp 1.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .content-container:hover {
+            transform: translateY(-5px);
+        }
+
+        #love-quotes {
+            text-align: center;
+            position: relative;
+        }
+
+        #love-quotes p {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-style: italic;
+            color: var(--text-color);
+            text-shadow: 0 0 5px var(--primary-color);
+            opacity: 0;
+            animation: fadeInQuote 2s forwards;
+        }
+
+        @keyframes fadeInQuote {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            padding-bottom: 56.25%;
+            margin: 30px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px var(--shadow-color);
+        }
+
+        .video-wrapper::before {
+            content: 'M&A';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--accent-color);
+            z-index: 10;
+        }
+
+        #youtube-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 30px 0;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 45%;
+            margin: 15px 0;
+            padding: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .timeline-item.left {
+            margin-right: 55%;
+        }
+
+        .timeline-item.right {
+            margin-left: 55%;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+
+        .timeline-item.left::before {
+            right: -27px;
+        }
+
+        .timeline-item.right::before {
+            left: -27px;
+        }
+
+        .timeline-item h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .wish-item {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .wish-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .wish-item h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px var(--accent-color);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color var(--transition-duration) ease;
+        }
+
+        .close:hover {
+            color: var(--accent-color);
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--primary-color);
+            background: var(--glass-bg);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            transition: border-color var(--transition-duration) ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 8px var(--accent-color);
+            outline: none;
+        }
+
+        #themeToggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 100;
+            transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+        }
+
+        #themeToggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px var(--accent-color);
+        }
+
+        #sidebar {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 100;
+        }
+
+        .sidebar-toggle {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .sidebar-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px var(--shadow-color);
+            min-width: 220px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(-10px);
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .sidebar-menu.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .menu-category {
+            margin-bottom: 15px;
+        }
+
+        .category-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+        }
+
+        .category-toggle:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        .toggle-icon {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.active {
+            transform: rotate(180deg);
+        }
+
+        .category-content {
+            display: none;
+            padding: 10px 0;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .category-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .menu-btn {
+            display: block;
+            width: 100%;
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.03);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .section-header {
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .section-header:hover {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                width: 80%;
+                margin-left: 50px;
+            }
+
+            .timeline-item::before {
+                left: -27px;
+            }
+
+            #sidebar {
+                left: 10px;
+                top: 10px;
+            }
+
+            .sidebar-menu {
+                min-width: 200px;
+                max-width: 90vw;
+            }
+
+            #greeting {
+                font-size: 2.5em;
+            }
+
+            #password-section h2 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loader">
+        <div aria-label="Orange and tan hamster running in a metal wheel" role="img" class="wheel-and-hamster">
+            <div class="wheel"></div>
+            <div class="hamster">
+                <div class="hamster__body">
+                    <div class="hamster__head">
+                        <div class="hamster__ear"></div>
+                        <div class="hamster__eye"></div>
+                        <div class="hamster__nose"></div>
+                    </div>
+                    <div class="hamster__limb hamster__limb--fr"></div>
+                    <div class="hamster__limb hamster__limb--fl"></div>
+                    <div class="hamster__limb hamster__limb--br"></div>
+                    <div class="hamster__limb hamster__limb--bl"></div>
+                    <div class="hamster__tail"></div>
+                </div>
+            </div>
+            <div class="spoke"></div>
+        </div>
+    </div>
+
+    <div id="particles-js"></div>
+
+    <div id="password-section">
+        <h2>Введите пароль</h2>
+        <div id="notification">Этот сайт только для Анюты и Михаила.</div>
+        <input type="password" id="password" placeholder="Пароль" />
+        <button id="submit-password">Войти</button>
+    </div>
+
+    <button id="themeToggle"><i class="fas fa-moon"></i> Тема</button>
+
+    <div id="content-section">
+        <div id="sidebar">
+            <button id="siteFunctionsBtn" class="sidebar-toggle"><i class="fas fa-bars"></i> Функции сайта</button>
+            <div id="functionsMenu" class="sidebar-menu">
+                <div class="menu-category">
+                    <button class="category-toggle"><i class="fas fa-calendar"></i> Планирование <span class="toggle-icon">▼</span></button>
+                    <div class="category-content">
+                        <button onclick="window.location.href='walking.html'" class="menu-btn">Спланируем прогулку?</button>
+                        <button onclick="window.location.href='coupons_for_us.html'" class="menu-btn">Наша версия купонов!</button>
+                        <button onclick="window.location.href='cooking.html'" class="menu-btn">Покушать любят все!</button>
+                        <button onclick="window.location.href='University.html'" class="menu-btn">Поступление на магистратуру!</button>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <button class="category-toggle"><i class="fas fa-heart"></i> Личные моменты <span class="toggle-icon">▼</span></button>
+                    <div class="category-content">
+                        <button onclick="window.location.href='mydearlady.html'" class="menu-btn">Что я думаю о тебе, Аня, надеюсь тебе понравится</button>
+                        <button onclick="window.location.href='book_of_us.html'" class="menu-btn">Краткая история о нас</button>
+                        <button onclick="window.location.href='creator.html'" class="menu-btn">Почему мне так тяжело без тебя...</button>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <button class="category-toggle"><i class="fas fa-gamepad"></i> Развлечения <span class="toggle-icon">▼</span></button>
+                    <div class="category-content">
+                        <button onclick="window.location.href='movie.html'" class="menu-btn">Фильмы</button>
+                        <button onclick="window.location.href='universe.html'" class="menu-btn">Вселенная</button>
+                        <button onclick="window.location.href='math.html'" class="menu-btn">Математика и любовь</button>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <button class="category-toggle"><i class="fas fa-book"></i> История и мысли <span class="toggle-icon">▼</span></button>
+                    <div class="category-content">
+                        <button onclick="window.location.href='poetry.html'" class="menu-btn">Прощение</button>
+                        <button onclick="window.location.href='fear.html'" class="menu-btn">Мысли об апреле</button>
+                        <button onclick="window.location.href='magic.html'" class="menu-btn">Магия моих мыслей</button>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <button class="category-toggle"><i class="fas fa-dice"></i> Игры <span class="toggle-icon">▼</span></button>
+                    <div class="category-content">
+                        <button onclick="window.location.href='battleship.html'" class="menu-btn">Морской бой!</button>
+                        <button onclick="window.location.href='shashki.html'" class="menu-btn">Шашки!</button>
+                        <button onclick="window.location.href='cards.html'" class="menu-btn">Дурак!</button>
+                        <button onclick="window.location.href='tetris.html'" class="menu-btn">Тетрис</button>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <button class="category-toggle"><i class="fas fa-video"></i> Увлечения <span class="toggle-icon">▼</span></button>
+                    <div class="category-content">
+                        <button onclick="window.location.href='Annas_YouTube_channel.html'" class="menu-btn">Твои видео с YouTube!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h1 id="greeting"></h1>
+
+        <section id="love-quotes" class="content-container">
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Наша цитата</h2>
+            <p id="quote">"Любовь — это когда счастье другого человека стоит не ниже твоего."</p>
+        </section>
+
+        <div class="video-wrapper content-container">
+            <iframe id="youtube-video" src="https://www.youtube.com/embed/b3GoZMfHJT4" 
+                    frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+            </iframe>
+        </div>
+
+        <section id="dates-section" class="content-container">
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Важные даты</h2>
+            <div id="calendar-container" class="timeline"></div>
+            <div id="calendar" class="section-header" onclick="openModal('datesModal')">
+                <h3><i class="fas fa-calendar-alt"></i> Добавить дату</h3>
+            </div>
+        </section>
+
+        <div id="challenge-container" class="content-container">
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Романтический челлендж</h2>
+            <div id="challenge"></div>
+            <button id="challengeButton">Новый челлендж</button>
+        </div>
+
+        <div id="wishes-section" class="content-container">
+            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Наши мечты</h2>
+            <form id="wish-form">
+                <input type="text" id="wish-title" placeholder="Название желания" required />
+                <input type="date" id="wish-date" required />
+                <button type="submit">Добавить желание</button>
+            </form>
+            <div id="saved-wishes-list"></div>
+        </div>
+
+        <div id="datesModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('datesModal')">×</span>
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 20px;">Добавить важную дату</h3>
+                <form id="date-form">
+                    <input type="text" id="date-title" placeholder="Название события" required />
+                    <input type="date" id="date-date" required />
+                    <button type="submit">Добавить дату</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA-qRTFlszcMafJv1eesYg-PUxsxYoo28U",
+            authDomain: "misha-and-anna-48e4c.firebaseapp.com",
+            projectId: "misha-and-anna-48e4c",
+            storageBucket: "misha-and-anna-48e4c.firebasestorage.app",
+            messagingSenderId: "822036073579",
+            appId: "1:822036073579:web:cd59fd4f5362b5f0bb752e",
+            measurementId: "G-XR86X6PXMX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Loader functionality
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            const passwordSection = document.getElementById('password-section');
+            
+            // Show loader for 5.5 seconds
+            setTimeout(() => {
+                gsap.to(loader, {
+                    opacity: 0,
+                    duration: 0.5,
+                    onComplete: () => {
+                        loader.classList.add('hidden');
+                        passwordSection.style.display = 'block';
+                        gsap.to(passwordSection, {
+                            opacity: 1,
+                            duration: 0.5,
+                            onStart: () => {
+                                passwordSection.classList.add('visible');
+                            }
+                        });
+                    }
+                });
+            }, 5500);
+        });
+
+        // Particles.js configuration
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 1000 } },
+                color: { value: ["#ff6b81", "#7b68ee", "#40c4ff"] },
+                shape: { type: "circle", stroke: { width: 0 } },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ff6b81",
+                    opacity: 0.3,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out"
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+
+        // GSAP animations
+        gsap.from("#greeting", { duration: 1.5, y: 50, opacity: 0, ease: "power2.out" });
+        gsap.from(".content-container", { duration: 1, y: 50, opacity: 0, stagger: 0.2, ease: "power2.out", delay: 0.5 });
+
+        function setGreeting() {
+            const hours = new Date().getHours();
+            let greeting = '';
+            if (hours >= 5 && hours < 12) {
+                greeting = '좋은 아침, 미샤와 안야!';
+            } else if (hours >= 12 && hours < 18) {
+                greeting = 'Добрый день, Аня и Миша!';
+            } else {
+                greeting = 'Good evening, Misha and Anna!';
+            }
+            document.getElementById('greeting').innerText = greeting;
+        }
+
+        setGreeting();
+
+        const SECRET_PASSWORD = "AnnaAndMisha2025";
+        const passwordSection = document.getElementById("password-section");
+        const contentSection = document.getElementById("content-section");
+        const submitPasswordButton = document.getElementById("submit-password");
+
+        submitPasswordButton.addEventListener("click", function() {
+            const enteredPassword = document.getElementById("password").value;
+            if (enteredPassword === SECRET_PASSWORD) {
+                passwordSection.style.display = "none";
+                contentSection.style.display = "block";
+                contentSection.classList.add("visible");
+                loadData();
+                gsap.to(contentSection, { duration: 0.7, opacity: 1 });
+            } else {
+                alert("Неверный пароль");
+            }
+        });
+
+        const dateForm = document.getElementById("date-form");
+        dateForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const title = document.getElementById("date-title").value;
+            const date = document.getElementById("date-date").value;
+            const newDate = { title, date };
+            addDate(newDate);
+            dateForm.reset();
+            closeModal('datesModal');
+        });
+
+        const wishForm = document.getElementById("wish-form");
+        wishForm.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const title = document.getElementById("wish-title").value;
+            const date = document.getElementById("wish-date").value;
+            const newWish = { title, date };
+            addWish(newWish);
+            wishForm.reset();
+        });
+
+        async function addDate(date) {
+            try {
+                await addDoc(collection(db, "dates"), date);
+                displayImportantDates();
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        }
+
+        async function deleteDate(id) {
+            try {
+                await deleteDoc(doc(db, "dates", id));
+                displayImportantDates();
+            } catch (e) {
+                console.error("Error deleting document: ", e);
+            }
+        }
+
+        async function addWish(wish) {
+            try {
+                await addDoc(collection(db, "wishes"), wish);
+                displaySavedWishes();
+            } catch (e) {
+                console.error("Ошибка при добавлении документа: ", e);
+            }
+        }
+
+        async function deleteWish(id) {
+            try {
+                await deleteDoc(doc(db, "wishes", id));
+                displaySavedWishes();
+            } catch (e) {
+                console.error("Ошибка при удалении документа: ", e);
+            }
+        }
+
+        async function loadData() {
+            await displayImportantDates();
+        }
+
+        async function displayImportantDates() {
+            const datesList = document.getElementById("calendar-container");
+            datesList.innerHTML = "";
+            const querySnapshot = await getDocs(collection(db, "dates"));
+            let index = 0;
+            querySnapshot.forEach((doc) => {
+                const date = doc.data();
+                const dateItem = document.createElement("div");
+                dateItem.classList.add('timeline-item', index % 2 === 0 ? 'left' : 'right');
+                dateItem.innerHTML = `
+                    <h4>${date.title}</h4>
+                    <p>${date.date}</p>
+                `;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Удалить';
+                deleteButton.addEventListener('click', () => deleteDate(doc.id));
+                dateItem.appendChild(deleteButton);
+                datesList.appendChild(dateItem);
+                gsap.from(dateItem, { duration: 0.5, y: 20, opacity: 0, ease: "power2.out", delay: index * 0.1 });
+                index++;
+            });
+        }
+
+        async function displaySavedWishes() {
+            const wishesList = document.getElementById("saved-wishes-list");
+            wishesList.innerHTML = "";
+            const querySnapshot = await getDocs(collection(db, "wishes"));
+            querySnapshot.forEach((doc) => {
+                const wish = doc.data();
+                const wishItem = document.createElement("div");
+                wishItem.classList.add("wish-item");
+                wishItem.innerHTML = `
+                    <h4>${wish.title}</h4>
+                    <p>Дата: ${wish.date}</p>
+                `;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Удалить';
+                deleteButton.addEventListener('click', () => deleteWish(doc.id));
+                wishItem.appendChild(deleteButton);
+                wishesList.appendChild(wishItem);
+                gsap.from(wishItem, { duration: 0.5, y: 20, opacity: 0, ease: "power2.out" });
+            });
+        }
+
+        const quotes = [
+            "Любовь — это не то, что мы чувствуем, а то, что мы делаем. — П. Д. Джеймс",
+            "Любовь — это всегда открытие чего-то нового в другом человеке. — Антуан де Сент-Экзюпери",
+            "Самое лучшее, что мы можем подарить друг другу, — это любовь. — Пауло Коэльо",
+            "Жизнь — это всего лишь момент, но если ты любишь, этот момент вечен. — М. Д. Джордж",
+            "Надежда — это не то, что мы ждем, а то, что мы видим и понимаем. — В. Г. Белинский",
+            "Любовь — это единственное, что растет, когда мы ею делимся. — Анн Ламотт",
+            "Любовь — это не судьба, а выбор. — Ричард Бах",
+            "Любовь — это когда счастье другого человека важнее твоего. — Х. Джексон Браун",
+            "Чтобы жить, нужно любить. Чтобы любить, нужно верить. — Дэниел Киз",
+            "Счастье — это не цель, а способ существования. — Ральф Уолдо Эмерсон",
+            "Надежда — это тот свет, который горит в конце туннеля. — Марио Фернандес",
+            "Счастье не в том, чтобы делать все, что хочешь, а в том, чтобы хотеть того, что делаешь. — Лев Толстой",
+            "Счастье — это когда каждый день — это шаг в сторону твоей мечты. — Дж. Р. Р. Толкин",
+            "Все великие дела совершаются через любовь и веру в себя. — Вильям Шекспир",
+            "Надежда — это не обещание, а возможность. — Шарлотта Бронте",
+            "Счастье — это не в обладании, а в ощущении, что ты живешь. — Вольтер",
+            "Верь в чудеса, но не забудь, что чудеса — это твои действия. — Пауло Коэльо",
+            "Счастье — это когда ты можешь улыбаться даже в самые трудные моменты. — Джон Грей",
+            "Счастье — это не что-то готовое, оно приходит из твоих собственных действий. — Далай-лама",
+            "Надежда — это не умирает, а прячется. — Эдгар Аллан По",
+            "Любовь всегда побеждает, но иногда она берет время. — Эрих Мария Ремарк",
+            "Счастье — это когда ты знаешь, что ты на правильном пути. — Генри Дэвид Торо",
+            "Любовь — это когда счастье другого человека становится твоим счастьем. — Генри Дэвид Торо",
+            "Надежда — это верить в то, что невозможное возможно. — Дж. К. Роулинг",
+            "Счастье приходит не тогда, когда ты получаешь все, а когда ты ценишь то, что у тебя есть. — Нельсон Мандела",
+            "Когда ты счастлив, мир становится светлее. — Джеймс Мэтью Бэрри",
+            "Надежда — это единственное, что не обманывает нас в этом мире. — Виктор Гюго",
+            "Сила любви преображает мир. — Лев Толстой",
+            "Никогда не теряй надежду, потому что каждый день — это новый шанс. — Ричард Бах",
+            "Счастье — это когда ты чувствуешь, что живешь по-настоящему. — Стивен Кови",
+            "Судьба — это не то, что с нами происходит, а то, как мы реагируем. — Р. Бах",
+            "Любовь — это когда два сердца понимают друг друга без слов. — П. Г. Вудхаус",
+            "Надежда — это свет, который ведет нас через темные времена. — Мартин Лютер Кинг",
+            "Счастье — это когда ты можешь находить радость даже в самых маленьких вещах. — Джон Грей",
+            "Надежда — это сияющий свет в темные времена. — Р. Бах",
+            "Любовь не измеряется словами, а действиями. — Нина Симон",
+            "Счастье — это то, что ты можешь создать из своих собственных мыслей. — Стивен Р. Кови",
+            "Все счастливые семьи похожи, но каждая несчастливая — несчастлива по-своему. — Лев Толстой",
+            "Счастье — это когда ты любишь себя. — Луиза Хей",
+            "Каждый день — это новый шанс, чтобы изменить свою жизнь. — Далай-лама",
+            "Любовь делает нас сильными, но иногда она также делает нас уязвимыми. — Шекспир",
+            "Любовь — это когда ты даришь частичку себя. — Пауло Коэльо",
+            "Счастье — это не то, что приходит, а то, что мы создаем сами. — Аристотель",
+            "Надежда — это вера, которая дает силы двигаться вперед. — Г. Лорка",
+            "Любовь не требует ничего, она дает все. — Тони Моррисон",
+            "Счастье — это когда ты понимаешь, что все в твоих руках. — Пауло Коэльо",
+            "Счастье — это когда ты переживаешь каждый момент, а не ждешь его окончания. — Далай-лама",
+            "Любовь — это когда сердце поет, а душа поет в унисон. — Леонардо да Винчи",
+            "Счастье — это путь, а не пункт назначения. — Ральф Уолдо Эмерсон",
+            "Любовь — это когда ты видишь мир через глаза другого человека. — Габриэль Гарсиа Маркес",
+            "Счастье — это когда ты ценишь каждое мгновение. — Джеймс Мэтью Бэрри",
+            "Надежда — это вера в чудеса. — Пауло Коэльо",
+            "Любовь — это когда ты готов измениться ради другого. — Лев Толстой",
+            "Счастье — это способность радоваться простым вещам. — Сенека",
+            "Счастье — это когда ты сам становишься тем человеком, о котором мечтал. — С. Кови",
+            "Любовь — это когда ты отдаешь что-то важное без сожаления. — Шекспир",
+            "Надежда — это вера, что после темной ночи всегда наступает светлый день. — Дж. К. Роулинг",
+            "Счастье — это когда ты не ищешь его, а оно находит тебя. — Вильям Шекспир",
+            "Любовь — это свет, который не угасает. — Л. Толстой",
+            "Истинная любовь — это не стремление изменить другого, а желание измениться самому ради него. — М. Калепназ"
+        ];
+
+        function changeQuote() {
+            const quoteElement = document.getElementById('quote');
+            gsap.to(quoteElement, {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    const randomIndex = Math.floor(Math.random() * quotes.length);
+                    quoteElement.innerHTML = quotes[randomIndex];
+                    gsap.to(quoteElement, { opacity: 1, duration: 0.5 });
+                }
+            });
+        }
+
+        setInterval(changeQuote, 5000);
+        changeQuote();
+
+        const themeToggle = document.getElementById('themeToggle');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Тема';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Тема';
+            }
+        });
+
+        const videos = [
+            "b3GoZMfHJT4", "EYG4ROejmyI", "FxB6_qaqHlY", "c_yCRwh97M8", "cFm8fTRW_so",
+            "jDQ4-C4AHmA", "KCT3ZagR9-M", "8DrQDURiYeQ", "Q_TzqcWKz00", "u1Wp2coFDB4",
+            "zlJDTxahav0", "MxBQEGMFeEU", "sGk520me6Ik"
+        ];
+
+        function changeVideo() {
+            const randomIndex = Math.floor(Math.random() * videos.length);
+            const videoId = videos[randomIndex];
+            const videoElement = document.getElementById('youtube-video');
+            gsap.to(videoElement, {
+                opacity: 0,
+                duration: 0.5,
+                onComplete: () => {
+                    videoElement.src = `https://www.youtube.com/embed/${videoId}`;
+                    gsap.to(videoElement, { opacity: 1, duration: 0.5 });
+                }
+            });
+        }
+
+        setInterval(changeVideo, 360000);
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                gsap.from(modal.querySelector('.modal-content'), { 
+                    y: -50, 
+                    opacity: 0, 
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                gsap.to(modal.querySelector('.modal-content'), {
+                    y: -50,
+                    opacity: 0,
+                    duration: 0.3,
+                    ease: "power2.out",
+                    onComplete: () => {
+                        modal.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarSection = document.querySelector('#calendar');
+            if (calendarSection) {
+                calendarSection.addEventListener('click', function() {
+                    openModal('datesModal');
+                });
+            }
+
+            const closeButtons = document.querySelectorAll('.close');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    if (modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.addEventListener('click', function(event) {
+                    if (event.target === modal) {
+                        closeModal(modal.id);
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    modals.forEach(modal => {
+                        if (modal.classList.contains('active')) {
+                            closeModal(modal.id);
+                        }
+                    });
+                }
+            });
+
+            const sidebarToggle = document.getElementById('siteFunctionsBtn');
+            const sidebarMenu = document.getElementById('functionsMenu');
+            if (sidebarToggle && sidebarMenu) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebarMenu.classList.toggle('active');
+                    gsap.to(sidebarMenu, {
+                        opacity: sidebarMenu.classList.contains('active') ? 1 : 0,
+                        y: sidebarMenu.classList.contains('active') ? 0 : -10,
+                        duration: 0.3
+                    });
+                });
+            }
+
+            const categoryToggles = document.querySelectorAll('.category-toggle');
+            categoryToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    const icon = this.querySelector('.toggle-icon');
+                    content.classList.toggle('active');
+                    icon.classList.toggle('active');
+                    gsap.to(content, {
+                        opacity: content.classList.contains('active') ? 1 : 0,
+                        y: content.classList.contains('active') ? 0 : -10,
+                        duration: 0.3
+                    });
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                if (!sidebarMenu.contains(event.target) && !sidebarToggle.contains(event.target)) {
+                    sidebarMenu.classList.remove('active');
+                    gsap.to(sidebarMenu, { opacity: 0, y: -10, duration: 0.3 });
+                }
+            });
+        });
+
+        const challenges = [
+            { id: 1, title: "Напиши письмо с максимально древними словами английского, которые ты только знаешь" },
+            { id: 2, title: "Сделай сюрприз, не сообщая о нем заранее." },
+            { id: 3, title: "Придумай 10 комплиментов и отправь ему/ей" },
+            { id: 4, title: "Каждый день на протяжении недели записывайте один момент, который вас порадовал, а потом пришли Мише/Анне." },
+            { id: 5, title: "Позвони Мише/Анне." },
+            { id: 6, title: "Скажи друг другу три вещи, которые ты ценишь в ней//нём." },
+            { id: 7, title: "Напиши друг другу поэму, вдохновленную тем, что вы вместе пережили." },
+            { id: 8, title: "Отправь письмо на сайт, записав то, что думаешь о Мише/Анне." },
+            { id: 9, title: "Сходите на прогулку в день, который устраивает вас обоих." },
+            { id: 10, title: "Проведите вечер, отключив все гаджеты, и сосредоточьтесь друг на друге." },
+            { id: 11, title: "Запиши видеосообщения и расскажи о том, что делаешь." },
+            { id: 12, title: "Скажи в гс что-то приятное для Мишы/Анни." },
+            { id: 13, title: "Вспомни самое приятное, что слышал от него/неё." },
+            { id: 14, title: "Сделайте совместное фото." },
+            { id: 15, title: "Организуйте для другого день сюрпризов." },
+            { id: 16, title: "Напишите открытку с благодарностью за что-то особенное." },
+            { id: 17, title: "Посмотрите старые фотографии и расскажите друг другу истории о них." },
+            { id: 18, title: "Опиши поездку, которую мы хотели бы совершить вместе." },
+            { id: 19, title: "Попробуйте новый вид активности, выбирает он/она." },
+            { id: 20, title: "Устроить поход в кино." },
+            { id: 21, title: "Каждому из вас нужно придумать свою уникальную песню и спеть друг другу." },
+            { id: 22, title: "Сделать список мечт, которые ты хочешь осуществить вместе/одна/один." },
+            { id: 23, title: "Вспомните самые смешные моменты, когда вы смеялись до слез." },
+            { id: 24, title: "Прочитайте книгу или статью, которая интересует вашего партнера, и обсудите." },
+            { id: 25, title: "Устройте вечер просмотра фильмов, выбрав только те, которые нравятся вашему партнеру." },
+            { id: 26, title: "Запишите видео с шуткой и отправьте его друг другу." },
+            { id: 27, title: "Создайте 'капсулу времени' с предметами, которые важны для вас." },
+            { id: 28, title: "Сделайте друг другу сюрприз, подготовив маленькие подарки без повода." },
+            { id: 29, title: "Подарите друг другу ежедневник, в который будете записывать самые милые моменты." },
+            { id: 30, title: "Проведите день без разговоров и используйте только жесты и мимику для общения." },
+            { id: 31, title: "Сыграйте в игру на знание друг друга (например, кто больше знает о своем друге)." },
+            { id: 32, title: "Запланируйте отпуск, который вы хотите провести." },
+            { id: 33, title: "Сделайте друг другу 5 неожиданных комплиментов." },
+            { id: 34, title: "Напишите стихотворение, вдохновленное вашей историей." },
+            { id: 35, title: "Подготовьте совместное интервью, где отвечаете друг за друга." },
+            { id: 36, title: "Попробуйте рисовать друг другу портреты, даже если у вас нет художественного опыта." },
+            { id: 37, title: "Составьте список песен, которые напоминают вам друг о друге." },
+            { id: 38, title: "Забудьте про все проблемы и целый день проводите в релаксе и спокойствии." },
+            { id: 39, title: "Напишите друг другу перечень вещей, за которые вы благодарны." },
+            { id: 40, title: "Сделайте план на месяц и впишите в него важные моменты для вас." },
+            { id: 41, title: "Проведите день вдвоем, делая что-то, что всегда хотели попробовать, но откладывали." },
+            { id: 42, title: "Придумайте свою собственную традицию, которую будете выполнять каждый месяц." },
+            { id: 43, title: "Посмотрите фильм с вашим любимым актором или актрисой." },
+            { id: 44, title: "Запланируйте день, посвященный одному из ваших хобби." },
+            { id: 45, title: "Напишите друг другу маленькие записки с вдохновляющими цитатами." },
+            { id: 46, title: "Придумайте дату, которая станет вашей новой традицией." },
+            { id: 47, title: "Посетите новое место в вашем городе." },
+            { id: 48, title: "Устроить вечер настольных игр или видеоигр." },
+            { id: 49, title: "Создайте свою собственную романтическую традицию." },
+            { id: 50, title: "Напишите списки «5 вещей, которые ты хочешь сделать»." },
+            { id: 51, title: "Придумайте смешную историю на основе ваших совместных воспоминаний." },
+            { id: 52, title: "Устроить спонтанный вечер кино по тематике стран, которые хотите посетить." },
+            { id: 53, title: "Организуйте свой мини-фестиваль (пикник, игры, музыка)." },
+            { id: 54, title: "Создайте вечерний ритуал, который будете выполнять каждую неделю." },
+            { id: 55, title: "Подготовьте сюрприз для друг друга на случайный день." },
+            { id: 56, title: "Подарите друг другу совместный день отдыха и расслабления." },
+            { id: 57, title: "Напишите креативные «обещания» для друг друга на будущее." },
+            { id: 58, title: "Подготовьте совместную фотографию с вашей историей." },
+            { id: 59, title: "Создайте карту ваших путешествий и отметьте места, которые хотите посетить." },
+            { id: 60, title: "Организуйте вечер, посвященный вашей любимой теме." },
+            { id: 61, title: "Обсудите, что вам обоим важно в жизни и в отношениях." },
+            { id: 62, title: "Создайте playlist с вашими любимыми песнями." },
+            { id: 63, title: "Посетите новый музей или выставку." },
+            { id: 64, title: "Соберите фотографии и сделайте альбом о ваших приключениях." },
+            { id: 65, title: "Запланируйте совместный день без смартфонов." },
+            { id: 66, title: "Сделайте план на неделю, включив в него совместные активности." },
+            { id: 67, title: "Сделайте совместное путешествие в ближайший город или деревню." },
+            { id: 68, title: "Исполни заветное желание своего партнёра." },
+            { id: 69, title: "Созвонитесь и поговорите о том, что происходит между вами" },
+            { id: 70, title: "Молча обними своего партнёра" },
+        ];
+
+        function getRandomChallenge() {
+            const randomIndex = Math.floor(Math.random() * challenges.length);
+            return challenges[randomIndex];
+        }
+
+        function displayChallenge() {
+            const challenge = getRandomChallenge();
+            const challengeDiv = document.getElementById("challenge");
+            challengeDiv.innerHTML = `<h3 style="font-family: 'Playfair Display', serif;">Сегодняшний челлендж</h3><p>${challenge.title}</p>`;
+            gsap.from(challengeDiv, { duration: 0.5, y: 20, opacity: 0, ease: "power2.out" });
+        }
+
+        document.getElementById("challengeButton").addEventListener("click", function() {
+            displayChallenge();
+        });
+
+        window.onload = function() {
+            displayChallenge();
+            displaySavedWishes();
+        };
+    </script>
+</body>
+</html>
+
+
+

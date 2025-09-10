@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abyssal Thoughts</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Amatic+SC:400,700');
+
+    body {
+      font-family: 'Amatic SC', sans-serif;
+      font-size: 80px;
+      background: #000; /* Чёрный фон */
+      color: #ff0000; /* Красный цвет для текста */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Эффект дождя */
+    .rain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(transparent, rgba(255, 255, 255, 0.1));
+      animation: rain 2s linear infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes rain {
+      0% { transform: translateY(-100vh); }
+      100% { transform: translateY(100vh); }
+    }
+
+    /* Эффект тумана */
+    .fog {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      animation: fog 20s linear infinite;
+      filter: blur(50px);
+    }
+
+    @keyframes fog {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Замедленный squiggly */
+    @keyframes squiggly-anim {
+      0% { filter: url('#squiggly-0'); }
+      25% { filter: url('#squiggly-1'); }
+      50% { filter: url('#squiggly-2'); }
+      75% { filter: url('#squiggly-3'); }
+      100% { filter: url('#squiggly-4'); }
+    }
+
+    /* Дрожание текста */
+    @keyframes tremble {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(2px); }
+      100% { transform: translateY(0); }
+    }
+
+    .squiggly {
+      animation: squiggly-anim 1s linear infinite, tremble 3s ease-in-out infinite;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    .button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 24px;
+      font-family: 'Amatic SC', sans-serif;
+      background: #2a2a2a;
+      color: #b0b0b0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .button:hover {
+      background: #3a3a3a;
+    }
+
+    .language-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      font-size: 18px;
+      font-family: 'Amatic SC', sans-serif;
+      background: #2a2a2a;
+      color: #b0b0b0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .language-toggle:hover {
+      background: #3a3a3a;
+    }
+  </style>
+</head>
+<body>
+  <div class="rain"></div>
+  <div class="fog"></div>
+  <button class="language-toggle" onclick="toggleLanguage()">EN</button>
+  <div class="squiggly" id="text">
+    Стоит ли погружаться в бездну мыслей моего создателя?
+  </div>
+  <button class="button" id="action-button">Попытаться всё же...</button>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+    <defs>
+      <filter id="squiggly-0">
+        <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="0"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+      </filter>
+      <filter id="squiggly-1">
+        <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="1"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" />
+      </filter>
+      <filter id="squiggly-2">
+        <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="2"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+      </filter>
+      <filter id="squiggly-3">
+        <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="3"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" />
+      </filter>
+      <filter id="squiggly-4">
+        <feTurbulence baseFrequency="0.02" numOctaves="3" result="noise" seed="4"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="6" />
+      </filter>
+    </defs>
+  </svg>
+
+  <audio id="background-audio" loop autoplay>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const translations = {
+      text: {
+        ru: "Стоит ли погружаться в бездну мыслей моего создателя?",
+        en: "Is it worth diving into the abyss of my creator’s mind?"
+      },
+      button: {
+        ru: "Попытаться всё же...",
+        en: "Try Anyway..."
+      }
+    };
+    
+    let isRussian = true;
+    
+    function toggleLanguage() {
+      const textDiv = document.getElementById('text');
+      const actionButton = document.getElementById('action-button');
+      const toggleButton = document.querySelector('.language-toggle');
+      
+      if (isRussian) {
+        textDiv.textContent = translations.text.en;
+        actionButton.textContent = translations.button.en;
+        toggleButton.textContent = 'RU';
+      } else {
+        textDiv.textContent = translations.text.ru;
+        actionButton.textContent = translations.button.ru;
+        toggleButton.textContent = 'EN';
+      }
+      
+      isRussian = !isRussian;
+    }
+
+    // Перенаправление на x.ai
+    document.getElementById('action-button').onclick = function() {
+      window.location.href = 'https://mishaandanna.github.io/MishaAndAnna/creator_continue.html';
+    };
+
+    // Управление звуком
+    const audio = document.getElementById('background-audio');
+    audio.volume = 0.2;
+  </script>
+</body>
+</html>

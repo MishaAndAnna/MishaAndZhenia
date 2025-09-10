@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Влияние милой леди: кто она в моих глазах</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        :root {
+            /* Futuristic-romantic color palette */
+            --primary-color: #ff3cac; /* Neon pink */
+            --secondary-color: #84fab0; /* Neon green */
+            --accent-color: #8a2be2; /* Neon purple */
+            --accent-dark: #6a1bb2; /* Darker purple */
+            --accent-light: #ff9ed2; /* Light pink */
+            
+            /* Neutral colors */
+            --text-color-light: #e0e0e0;
+            --text-color-dark: #f0f0f0;
+            --bg-light: #1a1a2e; /* Dark cosmic background */
+            --bg-light-accent: #2a2a4e;
+            --bg-dark: #0f0f1a;
+            --bg-dark-accent: #1e1e3e;
+            
+            /* Glow and shadow effects */
+            --glow-light: rgba(255, 60, 172, 0.6);
+            --glow-medium: rgba(132, 250, 176, 0.4);
+            --shadow-light: rgba(0, 0, 0, 0.2);
+            --shadow-medium: rgba(0, 0, 0, 0.3);
+            
+            /* Gradients */
+            --gradient-light: linear-gradient(135deg, #1a1a2e, #2a2a4e);
+            --gradient-dark: linear-gradient(135deg, #0f0f1a, #1e1e3e);
+            --gradient-accent: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            
+            /* Transitions and animations */
+            --transition-fast: 0.2s;
+            --transition-medium: 0.3s;
+            --transition-slow: 0.5s;
+            
+            /* Sizes and spacing */
+            --border-radius-sm: 10px;
+            --border-radius-md: 20px;
+            --border-radius-lg: 30px;
+            --spacing-xs: 5px;
+            --spacing-sm: 10px;
+            --spacing-md: 20px;
+            --spacing-lg: 40px;
+            --spacing-xl: 80px;
+            
+            /* Containers */
+            --container-width: 1200px;
+            --content-width: 800px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: var(--gradient-dark);
+            color: var(--text-color-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background var(--transition-medium) ease;
+            overflow-x: hidden;
+            padding-top: 80px;
+            position: relative;
+        }
+
+        body.dark-mode {
+            background: var(--gradient-light);
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: transparent;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            margin-bottom: 0.8em;
+            line-height: 1.3;
+            text-shadow: 0 0 10px var(--glow-light);
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+            position: relative;
+            padding-bottom: var(--spacing-md);
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 4px;
+            box-shadow: 0 0 15px var(--glow-light);
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--secondary-color);
+            margin-top: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            position: relative;
+            padding-left: var(--spacing-md);
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 40px;
+            background: var(--gradient-accent);
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 0 10px var(--glow-medium);
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: var(--spacing-md);
+            text-align: justify;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        a {
+            color: var(--accent-light);
+            text-decoration: none;
+            transition: color var(--transition-fast) ease, text-shadow var(--transition-fast) ease;
+        }
+
+        a:hover {
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--glow-light);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-md);
+            filter: brightness(1.1);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(26, 26, 46, 0.9);
+            box-shadow: 0 2px 15px var(--shadow-medium);
+            backdrop-filter: blur(15px);
+            transition: background var(--transition-medium) ease;
+        }
+
+        body.dark-mode header {
+            background: rgba(15, 15, 26, 0.9);
+        }
+
+        .nav-container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 10px var(--glow-light);
+        }
+
+        .nav-logo i {
+            margin-right: var(--spacing-sm);
+            animation: pulse 2s infinite;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 var(--spacing-sm);
+        }
+
+        .nav-links a {
+            font-size: 1rem;
+            font-weight: 500;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-fast) ease;
+            background: rgba(255, 60, 172, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 60, 172, 0.3);
+            box-shadow: 0 0 10px var(--glow-light);
+            transform: translateY(-2px);
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            margin-left: var(--spacing-md);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+        }
+
+        body.dark-mode .mobile-menu-btn {
+            color: var(--text-color-light);
+        }
+
+        .container {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: var(--spacing-md);
+            position: relative;
+        }
+
+        #content {
+            max-width: var(--content-width);
+            margin: var(--spacing-xl) auto;
+            background: rgba(26, 26, 46, 0.9);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 30px var(--shadow-medium), 0 0 20px var(--glow-light);
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-medium) ease;
+        }
+
+        body.dark-mode #content {
+            background: rgba(15, 15, 26, 0.9);
+            box-shadow: 0 10px 30px var(--shadow-medium), 0 0 20px var(--glow-medium);
+        }
+
+        #content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--gradient-accent);
+            box-shadow: 0 0 15px var(--glow-light);
+        }
+
+        .highlight {
+            background: rgba(255, 60, 172, 0.15);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            margin: var(--spacing-md) 0;
+            border-left: 4px solid var(--primary-color);
+            font-style: italic;
+            position: relative;
+            box-shadow: 0 0 10px var(--glow-light);
+        }
+
+        body.dark-mode .highlight {
+            background: rgba(132, 250, 176, 0.15);
+        }
+
+        .highlight::before {
+            content: '"';
+            font-family: 'Playfair Display', serif;
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.4;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast) ease;
+            box-shadow: 0 0 15px var(--glow-light);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--glow-light);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 0 10px var(--glow-light);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 0 15px var(--glow-light);
+        }
+
+        body.dark-mode .btn-outline {
+            border-color: var(--accent-light);
+            color: var(--accent-light);
+        }
+
+        body.dark-mode .btn-outline:hover {
+            background: var(--accent-light);
+            color: var(--bg-dark);
+        }
+
+        #themeToggle, #backToTop, #homeButton {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition-fast) ease;
+            box-shadow: 0 0 15px var(--glow-light);
+            z-index: 100;
+        }
+
+        #themeToggle {
+            bottom: var(--spacing-md);
+            right: var(--spacing-md);
+        }
+
+        #backToTop {
+            bottom: var(--spacing-md);
+            left: var(--spacing-md);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #backToTop.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #homeButton {
+            bottom: var(--spacing-md);
+            right: calc(var(--spacing-md) + 60px);
+        }
+
+        #themeToggle:hover, #backToTop:hover, #homeButton:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--glow-light);
+        }
+
+        .bio-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-lg);
+            margin: var(--spacing-lg) 0;
+            align-items: center;
+        }
+
+        .bio-image {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .bio-image img, .bio-image div {
+            width: 100%;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 0 20px var(--glow-light);
+            transition: transform var(--transition-medium) ease;
+        }
+
+        .bio-image img:hover, .bio-image div:hover {
+            transform: scale(1.02);
+        }
+
+        .bio-text {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .bio-stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            padding: var(--spacing-md);
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 0 15px var(--glow-light);
+            transition: all var(--transition-medium) ease;
+        }
+
+        body.dark-mode .stat-item {
+            background: rgba(15, 15, 26, 0.7);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px var(--glow-light);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+            text-shadow: 0 0 10px var(--glow-light);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-color-dark);
+            font-weight: 500;
+        }
+
+        .memories-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-lg) 0;
+        }
+
+        .memory-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: 0 0 15px var(--glow-light);
+            transition: all var(--transition-medium) ease;
+            cursor: pointer;
+        }
+
+        body.dark-mode .memory-card {
+            background: rgba(15, 15, 26, 0.8);
+        }
+
+        .memory-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px var(--glow-light);
+        }
+
+        .memory-img {
+            width: 100%;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            filter: brightness(1.1);
+        }
+
+        .memory-date {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            background: rgba(26, 26, 46, 0.9);
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-color-dark);
+        }
+
+        body.dark-mode .memory-date {
+            background: rgba(15, 15, 26, 0.9);
+        }
+
+        .memory-content {
+            padding: var(--spacing-md);
+        }
+
+        .memory-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--secondary-color);
+            text-shadow: 0 0 8px var(--glow-medium);
+        }
+
+        .memory-desc {
+            font-size: 0.9rem;
+            color: var(--text-color-dark);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .quotes-section {
+            margin: var(--spacing-xl) 0;
+        }
+
+        .quote-carousel {
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+            margin: var(--spacing-lg) 0;
+        }
+
+        .quote-slides {
+            display: flex;
+            transition: transform var(--transition-slow) ease;
+        }
+
+        .quote-slide {
+            min-width: 100%;
+            padding: var(--spacing-md);
+            box-sizing: border-box;
+        }
+
+        .quote-content {
+            background: rgba(26, 26, 46, 0.9);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 0 20px var(--glow-light);
+            text-align: center;
+            position: relative;
+        }
+
+        body.dark-mode .quote-content {
+            background: rgba(15, 15, 26, 0.9);
+        }
+
+        .quote-content::before {
+            content: '"';
+            font-family: 'Playfair Display', serif;
+            position: absolute;
+            top: -30px;
+            left: 20px;
+            font-size: 6rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+        }
+
+        .quote-text {
+            font-size: 1.4rem;
+            font-family: 'Caveat', cursive;
+            font-weight: 700;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.7;
+            color: var(--accent-light);
+            text-shadow: 0 0 5px var(--glow-light);
+        }
+
+        .quote-author {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        .quote-context {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            margin-top: var(--spacing-xs);
+            opacity: 0.7;
+            color: var(--text-color-dark);
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .carousel-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-fast) ease;
+            box-shadow: 0 0 10px var(--glow-light);
+        }
+
+        .carousel-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--glow-light);
+        }
+
+        .timeline-section {
+            margin: var(--spacing-xl) 0;
+            position: relative;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: var(--gradient-accent);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--glow-light);
+        }
+
+        .timeline-item {
+            padding: var(--spacing-lg) 0;
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            opacity: 0;
+            transition: opacity var(--transition-medium) ease;
+        }
+
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+        }
+
+        .timeline-content {
+            position: relative;
+            width: 45%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 0 15px var(--glow-light);
+            transition: all var(--transition-medium) ease;
+        }
+
+        body.dark-mode .timeline-content {
+            background: rgba(15, 15, 26, 0.9);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px var(--glow-light);
+        }
+
+        .timeline-date {
+            position: absolute;
+            width: 100px;
+            height: 30px;
+            background: var(--gradient-accent);
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            font-size: 0.9rem;
+            top: -15px;
+            box-shadow: 0 0 10px var(--glow-light);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-date {
+            left: -110px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-date {
+            right: -110px;
+        }
+
+        .timeline-content:hover .timeline-date {
+            background: var(--accent-color);
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--secondary-color);
+            text-shadow: 0 0 8px var(--glow-medium);
+        }
+
+        .timeline-desc {
+            font-size: 0.95rem;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px var(--glow-light);
+            transition: all var(--transition-fast) ease;
+            z-index: 1;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            background: var(--secondary-color);
+            box-shadow: 0 0 20px var(--glow-medium);
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .word-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-lg) 0;
+            justify-content: center;
+        }
+
+        .word-tag {
+            background: rgba(255, 60, 172, 0.2);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast) ease;
+            color: var(--accent-light);
+            box-shadow: 0 0 8px var(--glow-light);
+        }
+
+        .word-tag:hover {
+            background: rgba(255, 60, 172, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 0 12 Vanessa px var(--glow-light);
+        }
+
+        footer {
+            background: rgba(26, 26, 46, 0.9);
+            padding: var(--spacing-lg) 0;
+            margin-top: var(--spacing-xl);
+            box-shadow: 0 -5px 15px var(--shadow-medium);
+            transition: background var(--transition-medium) ease;
+        }
+
+        body.dark-mode footer {
+            background: rgba(15, 15, 26, 0.9);
+        }
+
+        .footer-content {
+            max-width: var(--container-width);
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 0 var(--spacing-md);
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: var(--spacing-lg);
+            padding: 0 var(--spacing-md);
+        }
+
+        .footer-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-md);
+            font-weight: 600;
+            text-shadow: 0 0 8px var(--glow-light);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-links a {
+            color: var(--text-color-dark);
+            transition: all var(--transition-fast) ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-links a i {
+            margin-right: var(--spacing-sm);
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--glow-light);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--glow-light);
+        }
+
+        .footer-contact p {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-contact i {
+            margin-right: var(--spacing-sm);
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--glow-light);
+        }
+
+        .social-links {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 60, 172, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            transition: all var(--transition-fast) ease;
+            box-shadow: 0 0 8px var(--glow-light);
+        }
+
+        .social-icon:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 0 12px var(--glow-light);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px var(--glow-light);
+        }
+
+        @media (max-width: 1024px) {
+            :root {
+                --container-width: 90%;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                background: rgba(26, 26, 46, 0.9);
+                box-shadow: 0 5px 10px var(--shadow-medium);
+                padding: var(--spacing-md) 0;
+                z-index: 10;
+            }
+
+            body.dark-mode .nav-links {
+                background: rgba(15, 15, 26, 0.9);
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .nav-links li {
+                margin: var(--spacing-xs) 0;
+                width: 100%;
+                text-align: center;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            #content {
+                padding: var(--spacing-md);
+            }
+
+            .bio-section {
+                flex-direction: column;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item {
+                justify-content: flex-start;
+                padding-left: 50px;
+            }
+
+            .timeline-item:nth-child(even) {
+                justify-content: flex-start;
+            }
+
+            .timeline-content {
+                width: 100%;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-date,
+            .timeline-item:nth-child(even) .timeline-date {
+                left: 0;
+                right: auto;
+                top: -40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --spacing-lg: 25px;
+                --spacing-xl: 50px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .stat-item {
+                min-width: 100%;
+            }
+
+            .footer-section {
+                min-width: 100%;
+            }
+
+            #themeToggle,
+            #backToTop,
+            #homeButton {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <header>
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>Моя милая леди</span>
+            </a>
+            <nav class="navbar">
+                <ul class="nav-links">
+                    <li><a href="#about">О ней</a></li>
+                    <li><a href="#memories">Воспоминания</a></li>
+                    <li><a href="#quotes">Цитаты</a></li>
+                    <li><a href="#timeline">Наша история</a></li>
+                </ul>
+                <div class="nav-controls">
+                    <button class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <main id="content">
+            <h1>Влияние милой леди: кто она в моих глазах</h1>
+            
+            <section id="about" class="bio-section">
+                <div class="bio-image">
+                    <div style="width: 100%; height: 300px; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); border-radius: var(--border-radius-lg); display: flex; justify-content: center; align-items: center;">
+                        <i class="fas fa-image" style="font-size: 3rem; color: white;"></i>
+                    </div>
+                </div>
+                <div class="bio-text">
+                    <h2>Кто она</h2>
+                    <p>Ее присутствие в моей жизни подобно тёплому лучу солнца, пробивающемуся сквозь облака даже в самый пасмурный день. Она не просто человек, а целая вселенная чувств, мыслей и идей, которые постоянно удивляют и вдохновляют меня.</p>
+                    <p>Аннюта — это самый особенный человек, которого я когда-либо встречал. В ней сочетаются сила и хрупкость, независимость и глубина чувств. Она умеет быть резкой, но за её словами всегда кроется правда, и я ценю её честность больше всего.</p>
+                    <p>Она не любит излишнего внимания, ей важно личное пространство, и я уважаю это. Но когда она рядом, мир кажется другим — наполненным смыслом, эмоциями и чем-то необъяснимо важным.</p>
+                    <p>Я восхищаюсь её внутренней силой и мягкостью одновременно. Она умеет быть решительной, когда это необходимо, и в то же время проявлять невероятную заботу и нежность. Каждый разговор с ней — это путешествие через глубины мысли и чувств.</p>
+                    <p>Я восхищаюсь её характером, её взглядом на жизнь. Она — человек, который оставляет след в душе, даже если сама этого не осознаёт. Я счастлив, что знаю её.</p>
+                    <div class="highlight">
+                        Её улыбка способна растопить лёд и преобразить даже самый серый день в праздник. Когда она смеётся, кажется, что весь мир начинает светиться ярче.
+                    </div>
+                </div>
+            </section>
+            
+            <section class="bio-stats">
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-value">∞</div>
+                    <div class="stat-label">Уровень доброты</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Интеллект</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-value">5/5</div>
+                    <div class="stat-label">Чувство юмора</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="stat-value">10/10</div>
+                    <div class="stat-label">Креативность</div>
+                </div>
+            </section>
+            
+            <section id="memories" class="memories-section">
+                <h2>Прекрасные воспоминания</h2>
+                <p>Каждый момент, проведённый с ней, становится драгоценным камнем в сокровищнице моей памяти. Вот некоторые из самых ярких...</p>
+                
+                <div class="memories-gallery">
+                    <div class="memory-card">
+                        <div class="memory-img" style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color));">
+                            <div class="memory-date">21.12.2024</div>
+                        </div>
+                        <div class="memory-content">
+                            <div class="memory-title">Первая встреча</div>
+                            <div class="memory-desc">День, когда мы начали общаться – момент, с которого всё началось. Тогда ещё было столько неизведанного, но уже чувствовалась особая связь, которая со временем только укреплялась.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="memory-card">
+                        <div class="memory-img" style="background: linear-gradient(135deg, var(--secondary-color), var(--accent-light));">
+                            <div class="memory-date">25.01.2025</div>
+                        </div>
+                        <div class="memory-content">
+                            <div class="memory-title">Серьёзные слова</div>
+                            <div class="memory-desc">Первая искренняя беседа, после которой стало ясно, что она важна для меня – тот самый разговор, который дал понять: есть кто-то, кто слушает, понимает и принимает. В нём было доверие, теплота и ощущение, что рядом — близкий человек.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="memory-card">
+                        <div class="memory-img" style="background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));">
+                            <div class="memory-date">21.03.2025</div>
+                        </div>
+                        <div class="memory-content">
+                            <div class="memory-title">Особенные дни</div>
+                            <div class="memory-desc">Особенный день, который стал нашим личным праздником – будь то годовщина общения, какой-то неожиданный сюрприз или просто вечер, когда всё было идеально. Тот момент, когда не нужны слова, ведь главное – ощущение счастья рядом.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="quotes" class="quotes-section">
+                <h2>Её мудрые мысли</h2>
+                <p>Её слова часто заставляют меня остановиться и задуматься, увидеть мир по-новому или посмотреть на привычные вещи под другим углом. Я думаю, что в глубине души некоторые цитаты могут иметь схожие понятия с её мыслями</p>
+                
+                <div class="quote-carousel">
+                    <div class="quote-slides">
+                        <div class="quote-slide">
+                            <div class="quote-content">
+                                <div class="quote-text">
+                                    «Ты всегда чувствуешь слишком глубоко, а я — слишком закрыта. Но, может быть, именно в этом наше равновесие?»
+                                </div>
+                                <div class="quote-author">Она сказала бы </div>
+                                <div class="quote-context">Во время нашего разговора о выборах и решениях</div>
+                            </div>
+                        </div>
+                        
+                        <div class="quote-slide">
+                            <div class="quote-content">
+                                <div class="quote-text">
+                                   «Я не всегда знаю, что сказать, но это не значит, что я не слышу. Ты для меня важен, даже если я молчу.»
+                                </div>
+                                <div class="quote-author">Её возможная мысль</div>
+                                <div class="quote-context">Когда мы обсуждали важность нашего общения</div>
+                            </div>
+                        </div>
+                        
+                        <div class="quote-slide">
+                            <div class="quote-content">
+                                <div class="quote-text">
+                                    В конце концов, мы помним не дни, а моменты. Жизнь — это череда мгновений, а не просто дни.
+                                </div>
+                                <div class="quote-author">Её философия</div>
+                                <div class="quote-context">Фантастические варианты слов Аннюты</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="carousel-controls">
+                        <button class="carousel-btn prev-quote">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-btn next-quote">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="timeline" class="timeline-section">
+                <h2>Наша история</h2>
+                <p>Каждый этап нашей истории — это новая глава прекрасной книги, которую мы пишем вместе день за днём.</p>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">21 декабря 2024</div>
+                            <div class="timeline-title">Первое знакомство</div>
+                            <div class="timeline-desc">Случайная встреча, которая изменила всё. Словно вселенная специально создала этот момент.</div>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">Январь 2025</div>
+                            <div class="timeline-title">Начало крепкой дружбы</div>
+                            <div class="timeline-desc"> Наши прогулки, которые стали жемчужиной нашего знакомства.</div>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">25 января 2025</div>
+                            <div class="timeline-title">Важный разговор</div>
+                            <div class="timeline-desc">Тот вечер, когда я рассказал о своих чувствах к ней, день, когда я понял, что хочу быть вместе с ней.</div>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">3 февраля 2025</div>
+                            <div class="timeline-title">Её ответ</div>
+                            <div class="timeline-desc">Она сказала мне: "Да", - я был самым счастливым человеком на Земле!</div>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">14 февраля 2025</div>
+                            <div class="timeline-title">Её выпуск</div>
+                            <div class="timeline-desc">Аннюта окончила университет! УРА!!!</div>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <div class="timeline-date">17 февраля 2025</div>
+                            <div class="timeline-title">Серьёзная беседа</div>
+                            <div class="timeline-desc">Диалог занял практически весь день и в итоге мы решили расстаться, это тяжело...</div>
+                        </div>
+                        <div class="timeline-dot"></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="word-section">
+                <h2>Слова, которые её описывают</h2>
+                <p>Есть множество качеств, которые делают её особенной. Вот лишь некоторые из них:</p>
+                
+                <div class="word-gallery">
+                    <div class="word-tag">Умная</div>
+                    <div class="word-tag">Заботливая</div>
+                    <div class="word-tag">Вдохновляющая</div>
+                    <div class="word-tag">Искренняя</div>
+                    <div class="word-tag">Креативная</div>
+                    <div class="word-tag">Верная</div>
+                    <div class="word-tag">Сильная</div>
+                    <div class="word-tag">Нежная</div>
+                    <div class="word-tag">Понимающая</div>
+                    <div class="word-tag">Яркая</div>
+                    <div class="word-tag">Целеустремлённая</div>
+                    <div class="word-tag">Чуткая</div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <footer>  
+        <div class="copyright">
+            © 2025 Все права защищены | Создано с <i class="fas fa-heart" style="color: var(--primary-color);"></i>
+        </div>
+    </footer>
+    
+    <button id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <button id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <button id="homeButton">
+        <i class="fas fa-home"></i>
+    </button>
+    
+    <script>
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: ['#ff3cac', '#84fab0', '#8a2be2'] },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#ff3cac',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            const themeIcon = this.querySelector('i');
+            themeIcon.classList.toggle('fa-moon');
+            themeIcon.classList.toggle('fa-sun');
+        });
+
+        // Scroll to top
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', function() {
+            const backToTopButton = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        // Home button navigation
+        document.getElementById('homeButton').addEventListener('click', function() {
+            window.location.href = 'https://mishaandanna.github.io/MishaAndAnna/';
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('show');
+        });
+
+        // Quote carousel
+        const quoteSlides = document.querySelector('.quote-slides');
+        const prevButton = document.querySelector('.prev-quote');
+        const nextButton = document.querySelector('.next-quote');
+        let slideIndex = 0;
+
+        function showSlide(index) {
+            quoteSlides.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        prevButton.addEventListener('click', function() {
+            if (slideIndex > 0) {
+                slideIndex--;
+                showSlide(slideIndex);
+            }
+        });
+
+        nextButton.addEventListener('click', function() {
+            const slides = document.querySelectorAll('.quote-slide');
+            if (slideIndex < slides.length - 1) {
+                slideIndex++;
+                showSlide(slideIndex);
+            }
+        });
+
+        // Fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fadeIn');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section, .memory-card, .stat-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Timeline animation on scroll
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            timelineObserver.observe(item);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    document.querySelector('.nav-links').classList.remove('show');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

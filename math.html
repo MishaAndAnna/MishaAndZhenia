@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Теорема Вечной Любви - математическое выражение чувств">
+    <title>Теорема Вечной Любви</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.min.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #d81b60;
+            --light-primary: #fce4ec;
+            --border-color: #f8bbd0;
+            --bg-gradient-start: #f5f7fa;
+            --bg-gradient-end: #e8eaec;
+            --text-color: #333;
+            --secondary-text: #757575;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 90%;
+            padding: 2.5rem;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            margin: 2.5rem 1rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .container:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(216, 27, 96, 0.15);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            position: relative;
+        }
+        
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .theorem {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border-left: 5px solid var(--primary-color);
+            background-color: var(--light-primary);
+            border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .theorem:hover {
+            transform: scale(1.01);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .explanation {
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .heart-container {
+            text-align: center;
+            margin: 2.5rem 0;
+            perspective: 1000px;
+        }
+        
+        .heart {
+            color: var(--primary-color);
+            font-size: 4rem;
+            display: inline-block;
+            animation: heartbeat 1.5s infinite, float 3s ease-in-out infinite alternate;
+            position: relative;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-10px) rotate(5deg); }
+        }
+        
+        .heart::before, .heart::after {
+            content: "❤️";
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.2;
+            animation: echo 2s infinite alternate;
+        }
+        
+        .heart::before {
+            animation-delay: 0.5s;
+        }
+        
+        .heart::after {
+            animation-delay: 1s;
+        }
+        
+        @keyframes echo {
+            0% { transform: scale(1); opacity: 0.2; }
+            100% { transform: scale(1.4); opacity: 0; }
+        }
+        
+        .explanation h2 {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.7rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
+        }
+        
+        .symbols {
+            padding: 1.2rem;
+            background-color: white;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .symbols:hover {
+            transform: translateY(-3px);
+        }
+        
+        .symbols p {
+            margin: 0.8rem 0;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .symbols p:hover {
+            background-color: var(--light-primary);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--secondary-text);
+            font-style: italic;
+            position: relative;
+            padding-top: 1.5rem;
+        }
+        
+        .footer::before {
+            content: "♾️";
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.7;
+        }
+        
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .theorem, .explanation {
+                padding: 1rem;
+            }
+            
+            .heart {
+                font-size: 3rem;
+            }
+        }
+        
+        /* Темная тема */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-gradient-start: #1a1a2e;
+                --bg-gradient-end: #16213e;
+                --text-color: #e7e7e8;
+                --secondary-text: #b0b0b0;
+            }
+            
+            .container {
+                background-color: #192134;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            }
+            
+            .theorem {
+                background-color: rgba(216, 27, 96, 0.15);
+            }
+            
+            .explanation {
+                background-color: #232f4b;
+            }
+            
+            .symbols {
+                background-color: #192134;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            }
+            
+            .symbols p:hover {
+                background-color: rgba(216, 27, 96, 0.15);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Теорема Вечной Любви</h1>
+        
+        <div class="heart-container">
+            <div class="heart">❤️</div>
+        </div>
+        
+        <div class="theorem">
+            <p style="text-align: center;">
+                $$\lim_{t \to \infty} \int_{\mathcal{M}} \Bigg[ \Big\langle \Phi_{\text{ты}}(t),\ \Phi_{\text{я}}(t) \Big\rangle_{\mathcal{H}_{\text{любовь}}} + \mathbb{E}_{x \sim \eta} \left[ \|c_{\text{ты}}(x) - c_{\text{я}}(x)\|^2 \right]^{-1} + \sum_{i=1}^\infty \text{Чувства}(M_i, S_i) \Bigg] \cdot \omega_{\text{сердце}} = \infty$$
+            </p>
+        </div>
+        
+        <div class="explanation">
+            <h2>Поэтический смысл</h2>
+            <p>Математика и любовь имеют много общего — обе загадочны, глубоки и бесконечны в своих проявлениях. Эта "теорема" объединяет красоту математического языка с глубиной человеческих чувств, создавая метафору, в которой формулы становятся поэзией.</p>
+            
+            <div class="symbols">
+                <p><strong>Предел при \(t \to \infty\):</strong> Вечность наших чувств, любовь, стремящаяся в бесконечность времени, преодолевающая все временные границы</p>
+                
+                <p><strong>Интеграл по \(\mathcal{M}\):</strong> Пространство всех возможных путей и моментов нашей совместной жизни, накопление опыта и воспоминаний</p>
+                
+                <p><strong>\(\Phi_{\text{ты}}(t), \Phi_{\text{я}}(t)\):</strong> Наши души, меняющиеся и растущие со временем, но всегда стремящиеся друг к другу</p>
+                
+                <p><strong>\(\mathcal{H}_{\text{любовь}}\):</strong> Пространство чувств, где встречаются наши сердца, символическое измерение, где живет любовь</p>
+                
+                <p><strong>\(\mathbb{E}_{x \sim \eta} \left[ \|c_{\text{ты}}(x) - c_{\text{я}}(x)\|^2 \right]^{-1}\):</strong> Обратная величина расстояния между нашими сердцами — чем ближе мы, тем больше её значение, преодоление разделяющих нас преград</p>
+                
+                <p><strong>\(\sum_{i=1}^\infty \text{Чувства}(M_i, S_i)\):</strong> Бесконечная сумма всех моментов счастья, нежности и страсти, каждый миг любви как бесценное слагаемое</p>
+                
+                <p><strong>\(\omega_{\text{сердце}}\):</strong> Мера любви в пространстве всех возможных чувств, сущность нашей связи, превращающая математику в эмоцию</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Любовь измеряется не формулами, но иногда формулы могут выразить то, что не могут обычные слова. В этом красота математики и глубина чувств — их таинственное родство в бесконечности.</p>
+        </div>
+    </div>
+</body>
+</html>

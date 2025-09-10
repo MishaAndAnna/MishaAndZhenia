@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Купоны для тебя</title>
+    <style>
+        :root {
+            --primary: #ff5e94;
+            --primary-light: #ff9db9;
+            --primary-dark: #d44372;
+            --secondary: #8064a2;
+            --light: #f6f6f6;
+            --dark: #333333;
+            --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: #f9f4f5;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 206, 218, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(200, 162, 230, 0.3) 0%, transparent 50%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: var(--shadow);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-toggle, .reset-coupons, .home-button {
+            background: var(--light);
+            border: 2px solid var(--primary-light);
+            border-radius: 20px;
+            color: var(--primary);
+            padding: 5px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle:hover, .reset-coupons:hover, .home-button:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--dark);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .intro p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 2px solid var(--primary-light);
+            border-radius: 20px;
+            color: var(--primary-dark);
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .coupon-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .coupon {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            transition: var(--transition);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            height: 350px;
+        }
+
+        .coupon:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .coupon-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+        }
+
+        .coupon.flipped .coupon-inner {
+            transform: rotateY(180deg);
+        }
+
+        .coupon-front, .coupon-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .coupon-back {
+            transform: rotateY(180deg);
+            padding: 20px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .coupon-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .coupon-header h3 {
+            font-size: 1.2rem;
+            margin: 0;
+        }
+
+        .coupon-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .coupon-details {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .coupon-description {
+            color: var(--dark);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .coupon-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        .coupon-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            border-radius: 5px;
+            padding: 8px 16px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            flex-grow: 1;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: #ff4444;
+            border: 1px solid #ff4444;
+            padding: 8px;
+            flex-grow: 0;
+        }
+
+        .btn-delete:hover {
+            background: #ff4444;
+            color: white;
+        }
+
+        .coupon.used .coupon-front::after {
+            content: 'ИСПОЛЬЗОВАН';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            background: rgba(255, 94, 148, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1.5rem;
+            z-index: 10;
+            width: 80%;
+            text-align: center;
+        }
+
+        .coupon.used {
+            opacity: 0.7;
+        }
+
+        .add-coupon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            z-index: 100;
+        }
+
+        .add-coupon:hover {
+            transform: scale(1.1);
+            background: var(--primary-dark);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            transition: var(--transition);
+            background: none;
+            border: none;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 94, 148, 0.2);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #f0f;
+            position: absolute;
+            top: 0;
+            z-index: 150;
+        }
+
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(3px);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .password-container {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .password-container h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .password-container p {
+            margin-bottom: 25px;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .smilebeat {
+            animation: smilebeat 1.5s ease-in-out infinite;
+            display: inline-block;
+            margin: 0 5px;
+            color: var(--primary);
+            font-size: 1.5em;
+        }
+
+        @keyframes smilebeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.3); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.3); }
+            60% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+
+        .password-input {
+            max-width: 300px;
+            margin: 0 auto 20px;
+        }
+
+        .password-error {
+            color: crimson;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            .coupon-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+            }
+
+            .add-coupon {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .intro h2 {
+                font-size: 1.5rem;
+            }
+
+            .filters {
+                gap: 8px;
+            }
+
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        body.dark-theme {
+            background-color: #1e1e2e;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(255, 126, 178, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(130, 112, 170, 0.1) 0%, transparent 50%);
+        }
+
+        body.dark-theme header {
+            background-color: #2d2d40;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-theme header h1 {
+            color: var(--primary-light);
+        }
+
+        body.dark-theme .theme-toggle, body.dark-theme .reset-coupons, body.dark-theme .home-button {
+            background: #3d3d55;
+            border-color: var(--primary-light);
+            color: var(--primary-light);
+        }
+
+        body.dark-theme .intro {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .intro h2 {
+            color: var(--primary-light);
+        }
+
+        body.dark-theme .filter-btn {
+            background: #3d3d55;
+            border-color: var(--primary-light);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .filter-btn.active, 
+        body.dark-theme .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        body.dark-theme .coupon {
+            background: #2d2d40;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-theme .coupon-front .coupon-content,
+        body.dark-theme .password-container {
+            background: #2d2d40;
+        }
+
+        body.dark-theme .coupon-description {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .btn-secondary {
+            color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+
+        body.dark-theme .modal-content {
+            background: #2d2d40;
+        }
+
+        body.dark-theme label,
+        body.dark-theme .close-modal {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme input, 
+        body.dark-theme textarea, 
+        body.dark-theme select {
+            background: #3d3d55;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .password-overlay {
+            background: rgba(30, 30, 46, 0.95);
+        }
+
+        body.dark-theme .password-container p {
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .btn-delete {
+            color: #ff6666;
+            border-color: #ff6666;
+        }
+
+        body.dark-theme .btn-delete:hover {
+            background: #ff6666;
+            color: white;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-container">
+            <h2>Добро пожаловать</h2>
+            <p>Эта страница содержит приватные купоны, созданные специально для вас двоих <span class="smilebeat">😊</span></p>
+            
+            <div class="form-group">
+                <label for="password">Пожалуйста, введите пароль</label>
+                <input type="password" id="password" class="password-input" placeholder="Введите пароль...">
+                <div class="password-error" id="passwordError">Неверный пароль. Попробуйте ещё раз.</div>
+            </div>
+            
+            <button class="btn-primary" id="submitPassword">Войти</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <i class="fas fa-smile"></i>
+            <h1>Купоны для нас</h1>
+        </div>
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i> Тема
+            </button>
+            <button class="reset-coupons" id="resetCoupons">
+                <i class="fas fa-redo"></i> Сбросить купоны
+            </button>
+            <button class="home-button" onclick="window.location.href='index.html'">
+                <i class="fas fa-home"></i> На главную
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="intro">
+            <h2>Наренные купоны</h2>
+            <p>Эти купоны созданы специально для тебя. Каждый из них можно использовать в любой момент, когда захочешь. Просто выбери понравившийся купон, нажми "Использовать", и я исполню написанное в нём обещание.</p>
+            <p>Нажми на купон, чтобы увидеть подробности!</p>
+        </section>
+
+        <section class="filters">
+            <button class="filter-btn active" data-filter="all">Все купоны</button>
+            <button class="filter-btn" data-filter="romantic">Лучшие</button>
+            <button class="filter-btn" data-filter="fun">Развлечения</button>
+            <button class="filter-btn" data-filter="practical">Практичные</button>
+            <button class="filter-btn" data-filter="surprise">Сюрпризы</button>
+            <button class="filter-btn" data-filter="used">Использованные</button>
+        </section>
+
+        <section class="coupon-container" id="couponContainer">
+        </section>
+    </main>
+
+    <button class="add-coupon" id="addCouponBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <div class="modal" id="addCouponModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal">×</button>
+            <h2>Добавить новый купон</h2>
+            
+            <form id="newCouponForm">
+                <div class="form-group">
+                    <label for="couponTitle">Название купона</label>
+                    <input type="text" id="couponTitle" required placeholder="Например: Купон на квест">
+                </div>
+                
+                <div class="form-group">
+                    <label for="couponDescription">Описание</label>
+                    <textarea id="couponDescription" rows="4" required placeholder="Опишите, что включает в себя этот купон..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="couponCategory">Категория</label>
+                    <select id="couponCategory" required>
+                        <option value="romantic">Романтический</option>
+                        <option value="fun">Развлечение</option>
+                        <option value="practical">Практичный</option>
+                        <option value="surprise">Сюрприз</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="couponIcon">Иконка</label>
+                    <select id="couponIcon" required>
+                        <option value="fa-gift">🎁 Подарок</option>
+                        <option value="fa-star">⭐ Звезда</option>
+                        <option value="fa-mug-hot">☕ Кружка</option>
+                        <option value="fa-utensils">🍽️ Ужин</option>
+                        <option value="fa-spa">🌿 СПА</option>
+                        <option value="fa-film">🎬 Фильм</option>
+                        <option value="fa-music">🎵 Музыка</option>
+                        <option value="fa-car">🚗 Поездка</option>
+                        <option value="fa-bed">🛏️ Кровать</option>
+                        <option value="fa-smile">😊 Смайлик</option>
+                        <option value="fa-puzzle-piece">🧩 Пазл</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="cancelCoupon">Отмена</button>
+                    <button type="submit" class="btn-primary">Добавить купон</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="useCouponModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeUseModal">×</button>
+            <h2>Использовать купон?</h2>
+            <p>Вы уверены, что хотите использовать этот купон? После использования он будет отмечен как "Использованный".</p>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" id="cancelUseCoupon">Отмена</button>
+                <button class="btn-primary" id="confirmUseCoupon">Да, использовать</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="resetCouponModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeResetModal">×</button>
+            <h2>Сбросить все купоны?</h2>
+            <p>Вы уверены, что хотите сбросить все использованные купоны? Это позволит использовать их снова.</p>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" id="cancelResetCoupon">Отмена</button>
+                <button class="btn-primary" id="confirmResetCoupon">Да, сбросить</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="deleteCouponModal">
+        <div class="modal-content">
+            <button class="close-modal" id="closeDeleteModal">×</button>
+            <h2>Удалить купон?</h2>
+            <p>Вы уверены, что хотите удалить этот купон? Это действие нельзя отменить.</p>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" id="cancelDeleteCoupon">Отмена</button>
+                <button class="btn-primary" id="confirmDeleteCoupon">Да, удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordOverlay = document.getElementById('passwordOverlay');
+            const passwordInput = document.getElementById('password');
+            const submitPassword = document.getElementById('submitPassword');
+            const passwordError = document.getElementById('passwordError');
+            const couponContainer = document.getElementById('couponContainer');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const addCouponBtn = document.getElementById('addCouponBtn');
+            const addCouponModal = document.getElementById('addCouponModal');
+            const closeModal = document.getElementById('closeModal');
+            const newCouponForm = document.getElementById('newCouponForm');
+            const cancelCoupon = document.getElementById('cancelCoupon');
+            const useCouponModal = document.getElementById('useCouponModal');
+            const closeUseModal = document.getElementById('closeUseModal');
+            const cancelUseCoupon = document.getElementById('cancelUseCoupon');
+            const confirmUseCoupon = document.getElementById('confirmUseCoupon');
+            const resetCouponsBtn = document.getElementById('resetCoupons');
+            const resetCouponModal = document.getElementById('resetCouponModal');
+            const closeResetModal = document.getElementById('closeResetModal');
+            const cancelResetCoupon = document.getElementById('cancelResetCoupon');
+            const confirmResetCoupon = document.getElementById('confirmResetCoupon');
+            const deleteCouponModal = document.getElementById('deleteCouponModal');
+            const closeDeleteModal = document.getElementById('closeDeleteModal');
+            const cancelDeleteCoupon = document.getElementById('cancelDeleteCoupon');
+            const confirmDeleteCoupon = document.getElementById('confirmDeleteCoupon');
+            const themeToggle = document.getElementById('themeToggle');
+            
+            const PASSWORD = "любимая";
+            const TELEGRAM_BOT_TOKEN = '8055216192:AAGYBAVgLaVUinW-YqnB7QTSLWljuT9s3Pg';
+            const TELEGRAM_CHAT_ID = '1042168412';
+            let currentFilter = 'all';
+            let currentCoupon = null;
+            
+            if (localStorage.getItem('darkTheme') === 'true') {
+                document.body.classList.add('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Тема';
+            }
+            
+            const initialCoupons = [
+                {
+                    id: 'coupon-1',
+                    title: 'Купон на прогулку в кафе в любую желанную тобой минуту',
+                    description: 'Этот купон даёт право встречу с твоими любимыми блюдами. Я всё подготовлю и создам милую атмосферу.',
+                    category: 'romantic',
+                    icon: 'fa-utensils',
+                    used: false
+                },
+                {
+                    id: 'coupon-2',
+                    title: 'Купон на квест',
+                    description: 'Предъяви этот купон, и мы сейчас же пойдем на какой-то квест или игровое кафе настольных игр',
+                    category: 'romantic',
+                    icon: 'fa-puzzle-piece',
+                    used: false
+                },
+                {
+                    id: 'coupon-3',
+                    title: 'Киновечер по твоему выбору',
+                    description: 'Этот купон позволяет тебе выбрать любой фильм или сериал для совместного просмотра. Пойдем в кинотеатр?',
+                    category: 'fun',
+                    icon: 'fa-film',
+                    used: false
+                },
+                {
+                    id: 'coupon-4',
+                    title: 'Купон на исполнение желания',
+                    description: 'Предъяви этот купон, и я исполню одно твоё желание без вопросов и возражений (в разумных пределах, конечно).',
+                    category: 'surprise',
+                    icon: 'fa-star',
+                    used: false
+                },
+                {
+                    id: 'coupon-5',
+                    title: 'Погуляем в парке?',
+                    description: 'Этот купон гарантирует тебе моё участие во всех желанных тобой способах провести время и отдохнуть',
+                    category: 'practical',
+                    icon: 'fa-mug-hot',
+                    used: false
+                },
+                {
+                    id: 'coupon-6',
+                    title: 'День без споров',
+                    description: 'Используй этот купон в любой день, и я не буду спорить с тобой в течение всего дня, а лишь смотреть на всё с твоей стороны, что бы ни случилось.',
+                    category: 'practical',
+                    icon: 'fa-smile',
+                    used: false
+                },
+                {
+                    id: 'coupon-7',
+                    title: 'Спонтанная поездка',
+                    description: 'Предъяви этот купон, и мы пойдем гулять в необычное место на выходные, в место по твоему выбору (или сюрприз, если пожелаешь).',
+                    category: 'surprise',
+                    icon: 'fa-car',
+                    used: false
+                },
+                {
+                    id: 'coupon-8',
+                    title: 'Миша будет моим рабочим',
+                    description: 'Этот купон гарантирует тебе день, когда ты можешь меня эксплуатировать: помыть посуду? убраться дома? Всё будет сделано хах',
+                    category: 'practical',
+                    icon: 'fa-bed',
+                    used: false
+                }
+            ];
+
+            let coupons = JSON.parse(localStorage.getItem('loveCoupons')) || initialCoupons;
+            
+            if (!coupons || coupons.length === 0) {
+                localStorage.setItem('loveCoupons', JSON.stringify(initialCoupons));
+                coupons = initialCoupons;
+            }
+            
+            async function sendTelegramNotification(couponTitle, isReset = false, isDeleted = false) {
+                let message;
+                if (isReset) {
+                    message = `Аня сбросила все использованные купоны! 🎉 Теперь их можно использовать снова.`;
+                } else if (isDeleted) {
+                    message = `Аня удалила купон: "${couponTitle}"! 🗑️`;
+                } else {
+                    message = `Аня выбрала купон: "${couponTitle}"! 🎉`;
+                }
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}`;
+                
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        console.error('Ошибка отправки сообщения в Telegram:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Ошибка при отправке уведомления в Telegram:', error);
+                }
+            }
+            
+            submitPassword.addEventListener('click', function() {
+                if (passwordInput.value === PASSWORD) {
+                    passwordOverlay.style.display = 'none';
+                    localStorage.setItem('lovePassword', passwordInput.value);
+                    renderCoupons();
+                } else {
+                    passwordError.style.display = 'block';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                    passwordInput.classList.add('shake');
+                    setTimeout(() => {
+                        passwordInput.classList.remove('shake');
+                    }, 500);
+                }
+            });
+
+            passwordInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    submitPassword.click();
+                }
+            });
+            
+            function renderCoupons() {
+                couponContainer.innerHTML = '';
+                
+                coupons.forEach(coupon => {
+                    if (currentFilter === 'all' || 
+                        (currentFilter === 'used' && coupon.used) || 
+                        (coupon.category === currentFilter && !coupon.used)) {
+                        
+                        const couponElement = document.createElement('div');
+                        couponElement.className = `coupon ${coupon.used ? 'used' : ''}`;
+                        couponElement.dataset.id = coupon.id;
+                        
+                        couponElement.innerHTML = `
+                            <div class="coupon-inner">
+                                <div class="coupon-front">
+                                    <div class="coupon-header">
+                                        <h3>${coupon.title}</h3>
+                                    </div>
+                                    <div class="coupon-content">
+                                        <div class="coupon-details">
+                                            <i class="fas ${coupon.icon} coupon-icon"></i>
+                                            <div class="coupon-description">${coupon.description}</div>
+                                        </div>
+                                        <div class="coupon-actions">
+                                            <button class="btn-primary use-coupon" ${coupon.used ? 'disabled' : ''}>Использовать</button>
+                                            <button class="btn-secondary flip-coupon">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                            <button class="btn-delete delete-coupon">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="coupon-back">
+                                    <h3>Как использовать</h3>
+                                    <p>Просто нажми кнопку "Использовать" на этом купоне, когда захочешь его применить.</p>
+                                    <p>После использования купон будет отмечен как использованный, но ты всегда сможешь добавить новые купоны!</p>
+                                    <button class="btn-secondary flip-back">Вернуться</button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        couponContainer.appendChild(couponElement);
+                    }
+                });
+                
+                document.querySelectorAll('.flip-coupon, .flip-back').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const coupon = this.closest('.coupon');
+                        coupon.classList.toggle('flipped');
+                    });
+                });
+                
+                document.querySelectorAll('.use-coupon').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (!this.closest('.coupon').classList.contains('used')) {
+                            currentCoupon = this.closest('.coupon').dataset.id;
+                            useCouponModal.style.display = 'flex';
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.delete-coupon').forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        currentCoupon = this.closest('.coupon').dataset.id;
+                        deleteCouponModal.style.display = 'flex';
+                    });
+                });
+                
+                document.querySelectorAll('.coupon').forEach(coupon => {
+                    coupon.addEventListener('click', function() {
+                        if(!this.classList.contains('flipped')) {
+                            this.classList.add('flipped');
+                        }
+                    });
+                });
+            }
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    renderCoupons();
+                });
+            });
+            
+            addCouponBtn.addEventListener('click', () => {
+                addCouponModal.style.display = 'flex';
+                document.getElementById('couponTitle').focus();
+            });
+            
+            closeModal.addEventListener('click', () => {
+                addCouponModal.style.display = 'none';
+                newCouponForm.reset();
+            });
+            
+            cancelCoupon.addEventListener('click', () => {
+                addCouponModal.style.display = 'none';
+                newCouponForm.reset();
+            });
+            
+            newCouponForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newCoupon = {
+                    id: 'coupon-' + (Date.now()),
+                    title: document.getElementById('couponTitle').value,
+                    description: document.getElementById('couponDescription').value,
+                    category: document.getElementById('couponCategory').value,
+                    icon: document.getElementById('couponIcon').value,
+                    used: false
+                };
+                
+                coupons.push(newCoupon);
+                localStorage.setItem('loveCoupons', JSON.stringify(coupons));
+                
+                addCouponModal.style.display = 'none';
+                newCouponForm.reset();
+                
+                currentFilter = 'all';
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-filter="all"]').classList.add('active');
+                
+                renderCoupons();
+                showConfetti();
+            });
+            
+            closeUseModal.addEventListener('click', () => {
+                useCouponModal.style.display = 'none';
+                currentCoupon = null;
+            });
+            
+            cancelUseCoupon.addEventListener('click', () => {
+                useCouponModal.style.display = 'none';
+                currentCoupon = null;
+            });
+            
+            confirmUseCoupon.addEventListener('click', () => {
+                if (currentCoupon) {
+                    const index = coupons.findIndex(coupon => coupon.id === currentCoupon);
+                    if (index !== -1) {
+                        coupons[index].used = true;
+                        localStorage.setItem('loveCoupons', JSON.stringify(coupons));
+                        
+                        sendTelegramNotification(coupons[index].title);
+                        
+                        useCouponModal.style.display = 'none';
+                        renderCoupons();
+                        showConfetti();
+                        currentCoupon = null;
+                    }
+                }
+            });
+
+            closeDeleteModal.addEventListener('click', () => {
+                deleteCouponModal.style.display = 'none';
+                currentCoupon = null;
+            });
+            
+            cancelDeleteCoupon.addEventListener('click', () => {
+                deleteCouponModal.style.display = 'none';
+                currentCoupon = null;
+            });
+            
+            confirmDeleteCoupon.addEventListener('click', () => {
+                if (currentCoupon) {
+                    const index = coupons.findIndex(coupon => coupon.id === currentCoupon);
+                    if (index !== -1) {
+                        const deletedCouponTitle = coupons[index].title;
+                        coupons.splice(index, 1);
+                        localStorage.setItem('loveCoupons', JSON.stringify(coupons));
+                        
+                        sendTelegramNotification(deletedCouponTitle, false, true);
+                        
+                        deleteCouponModal.style.display = 'none';
+                        renderCoupons();
+                        showConfetti();
+                        currentCoupon = null;
+                    }
+                }
+            });
+            
+            resetCouponsBtn.addEventListener('click', () => {
+                resetCouponModal.style.display = 'flex';
+            });
+            
+            closeResetModal.addEventListener('click', () => {
+                resetCouponModal.style.display = 'none';
+            });
+            
+            cancelResetCoupon.addEventListener('click', () => {
+                resetCouponModal.style.display = 'none';
+            });
+            
+            confirmResetCoupon.addEventListener('click', () => {
+                coupons = coupons.map(coupon => ({
+                    ...coupon,
+                    used: false
+                }));
+                localStorage.setItem('loveCoupons', JSON.stringify(coupons));
+                
+                sendTelegramNotification(null, true);
+                
+                resetCouponModal.style.display = 'none';
+                currentFilter = 'all';
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-filter="all"]').classList.add('active');
+                renderCoupons();
+                showConfetti();
+            });
+            
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-theme');
+                const isDark = document.body.classList.contains('dark-theme');
+                localStorage.setItem('darkTheme', isDark);
+                
+                if (isDark) {
+                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Тема';
+                } else {
+                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Тема';
+                }
+            });
+            
+            function showConfetti() {
+                const colors = ['#ff5e94', '#ff9db9', '#8064a2', '#ffd700', '#7fffd4'];
+                
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.opacity = Math.random() + 0.5;
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    
+                    document.body.appendChild(confetti);
+                    
+                    const animation = confetti.animate(
+                        [
+                            { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+                            { transform: `translate(${Math.random() * 100 - 50}px, ${Math.random() * 600 + 200}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                        ],
+                        {
+                            duration: Math.random() * 2000 + 1500,
+                            easing: 'cubic-bezier(0, .9, .57, 1)',
+                            delay: Math.random() * 1500
+                        }
+                    );
+                    
+                    animation.onfinish = function() {
+                        confetti.remove();
+                    };
+                }
+            }
+            
+            document.head.insertAdjacentHTML('beforeend', `
+                <style>
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                        20%, 40%, 60%, 80% { transform: translateX(5px); }
+                    }
+                    
+                    .shake {
+                        animation: shake 0.5s ease-in-out;
+                    }
+                </style>
+            `);
+            
+            const savedPassword = localStorage.getItem('lovePassword');
+            if (savedPassword === PASSWORD) {
+                passwordOverlay.style.display = 'none';
+                renderCoupons();
+            }
+        });
+    </script>
+</body>
+</html>

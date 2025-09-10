@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="title">Письмо Аннюте</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Playfair+Display:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f5f5f5;
+            font-family: 'Cormorant Garamond', serif;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+        body.dark-theme {
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
+        }
+        body.light-theme {
+            background: linear-gradient(180deg, #f5f5f5 0%, #e0e0e0 100%);
+            color: #333;
+        }
+        body.sunset-theme {
+            background: linear-gradient(180deg, #ff6f61 0%, #ffb88c 50%, #4b3f72 100%);
+        }
+        body.cosmos-theme {
+            background: linear-gradient(180deg, #1a0b3b 0%, #3c2f6b 50%, #0f0c29 100%);
+        }
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.5;
+            animation: twinkle 10s infinite;
+            z-index: -2;
+            will-change: opacity;
+        }
+        body.light-theme .stars {
+            opacity: 0.15;
+        }
+        body.sunset-theme .stars {
+            opacity: 0.3;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png'), linear-gradient(180deg, rgba(255, 111, 97, 0.2), rgba(75, 63, 114, 0.2));
+        }
+        body.cosmos-theme .stars {
+            opacity: 0.7;
+            animation: galaxyTwinkle 8s infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.7; }
+        }
+        @keyframes galaxyTwinkle {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        .comet {
+            position: absolute;
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.7), transparent);
+            animation: comet-fall 8s linear infinite;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        .comet::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.4), transparent);
+            transform: scaleX(2);
+            opacity: 0.6;
+        }
+        body.light-theme .comet {
+            background: linear-gradient(90deg, rgba(220, 20, 60, 0.7), transparent);
+        }
+        body.light-theme .comet::after {
+            background: linear-gradient(90deg, rgba(220, 20, 60, 0.4), transparent);
+        }
+        body.sunset-theme .comet {
+            background: linear-gradient(90deg, rgba(255, 140, 0, 0.7), transparent);
+        }
+        body.sunset-theme .comet::after {
+            background: linear-gradient(90deg, rgba(255, 140, 0, 0.4), transparent);
+            transform: scaleX(1.5);
+            opacity: 0.5;
+        }
+        body.cosmos-theme .comet {
+            background: linear-gradient(90deg, rgba(138, 43, 226, 0.7), transparent);
+        }
+        body.cosmos-theme .comet::after {
+            background: linear-gradient(90deg, rgba(138, 43, 226, 0.4), transparent);
+            transform: scaleX(2.5);
+            opacity: 0.7;
+        }
+        @keyframes comet-fall {
+            0% { transform: translate(0, -100vh) rotate(45deg); opacity: 1; }
+            100% { transform: translate(150vw, 150vh) rotate(45deg); opacity: 0; }
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(5px);
+            text-align: center;
+            animation: fadeIn 2s ease-in;
+            transition: background 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease;
+        }
+        body.dark-theme .container {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        body.light-theme .container {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        body.sunset-theme .container {
+            background: rgba(255, 182, 140, 0.1);
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.2);
+        }
+        body.cosmos-theme .container {
+            background: rgba(138, 43, 226, 0.05);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .scrollable-content {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+        }
+        body.dark-theme .scrollable-content {
+            scrollbar-color: #ffd700 rgba(255, 255, 255, 0.05);
+        }
+        body.light-theme .scrollable-content {
+            scrollbar-color: #dc143c rgba(0, 0, 0, 0.05);
+        }
+        body.sunset-theme .scrollable-content {
+            scrollbar-color: #ff8c00 rgba(255, 182, 140, 0.05);
+        }
+        body.cosmos-theme .scrollable-content {
+            scrollbar-color: #8a2be2 rgba(138, 43, 226, 0.05);
+        }
+        .scrollable-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        body.dark-theme .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        body.light-theme .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        body.sunset-theme .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(255, 182, 140, 0.05);
+        }
+        body.cosmos-theme .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(138, 43, 226, 0.05);
+        }
+        body.dark-theme .scrollable-content::-webkit-scrollbar-thumb {
+            background: #ffd700;
+            border-radius: 3px;
+        }
+        body.light-theme .scrollable-content::-webkit-scrollbar-thumb {
+            background: #dc143c;
+            border-radius: 3px;
+        }
+        body.sunset-theme .scrollable-content::-webkit-scrollbar-thumb {
+            background: #ff8c00;
+            border-radius: 3px;
+        }
+        body.cosmos-theme .scrollable-content::-webkit-scrollbar-thumb {
+            background: #8a2be2;
+            border-radius: 3px;
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8em;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+        }
+        body.dark-theme h1 {
+            color: #ffd700;
+        }
+        body.light-theme h1 {
+            color: #dc143c;
+            text-shadow: 0 0 10px rgba(220, 20, 60, 0.3);
+        }
+        body.sunset-theme h1 {
+            color: #ff8c00;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+        }
+        body.cosmos-theme h1 {
+            color: #e6e6fa;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+        }
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em;
+            margin: 35px 0 15px;
+            position: relative;
+            transition: color 0.5s ease;
+        }
+        body.dark-theme h2 {
+            color: #f0e68c;
+        }
+        body.light-theme h2 {
+            color: #dc143c;
+        }
+        body.sunset-theme h2 {
+            color: #ffb88c;
+        }
+        body.cosmos-theme h2 {
+            color: #d8bfd8;
+        }
+        h2::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 2px;
+            margin: 8px auto;
+            transition: background 0.5s ease;
+        }
+        body.dark-theme h2::after {
+            background: #ffd700;
+        }
+        body.light-theme h2::after {
+            background: #dc143c;
+        }
+        body.sunset-theme h2::after {
+            background: #ff8c00;
+        }
+        body.cosmos-theme h2::after {
+            background: #8a2be2;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.7;
+            margin: 12px 0;
+            opacity: 0;
+            animation: textAppear 1s ease forwards;
+            animation-delay: calc(0.2s * var(--order));
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ffd700" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'), auto;
+        }
+        body.light-theme p {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23dc143c" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'), auto;
+        }
+        body.sunset-theme p {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff8c00" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'), auto;
+        }
+        body.cosmos-theme p {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%238a2be2" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'), auto;
+        }
+        @keyframes textAppear {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .send-button, .replay-button {
+            margin: 35px auto;
+            padding: 10px 25px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.5s, background 0.5s ease, color 0.5s ease;
+            animation: pulse 2s infinite;
+        }
+        body.dark-theme .send-button, body.dark-theme .replay-button {
+            color: #0d1b2a;
+            background: #ffd700;
+        }
+        body.light-theme .send-button, body.light-theme .replay-button {
+            color: #fff;
+            background: #dc143c;
+        }
+        body.sunset-theme .send-button, body.sunset-theme .replay-button {
+            color: #fff;
+            background: #ff8c00;
+        }
+        body.cosmos-theme .send-button, body.cosmos-theme .replay-button {
+            color: #fff;
+            background: #8a2be2;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .send-button:hover, .replay-button:hover {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+        }
+        body.light-theme .send-button:hover, body.light-theme .replay-button:hover {
+            box-shadow: 0 0 15px rgba(220, 20, 60, 0.7);
+        }
+        body.sunset-theme .send-button:hover, body.sunset-theme .replay-button:hover {
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.7);
+        }
+        body.cosmos-theme .send-button:hover, body.cosmos-theme .replay-button:hover {
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.7);
+        }
+        .language-toggle, .theme-toggle {
+            position: absolute;
+            top: 15px;
+            padding: 6px 12px;
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9em;
+            color: #0d1b2a;
+            background: #ffd700;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.5s, background 0.5s ease, color 0.5s ease;
+        }
+        .language-toggle {
+            right: 15px;
+        }
+        .theme-toggle {
+            right: 65px;
+        }
+        body.light-theme .language-toggle, body.light-theme .theme-toggle {
+            background: #dc143c;
+            color: #fff;
+        }
+        body.sunset-theme .language-toggle, body.sunset-theme .theme-toggle {
+            background: #ff8c00;
+            color: #fff;
+        }
+        body.cosmos-theme .language-toggle, body.cosmos-theme .theme-toggle {
+            background: #8a2be2;
+            color: #fff;
+        }
+        .language-toggle:hover, .theme-toggle:hover {
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+        body.light-theme .language-toggle:hover, body.light-theme .theme-toggle:hover {
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.7);
+        }
+        body.sunset-theme .language-toggle:hover, body.sunset-theme .theme-toggle:hover {
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+        }
+        body.cosmos-theme .language-toggle:hover, body.cosmos-theme .theme-toggle:hover {
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.7);
+        }
+        .writing-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            background: linear-gradient(180deg, rgba(13, 27, 42, 0.95), rgba(27, 38, 59, 0.95));
+        }
+        .star-transition {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ffd700;
+            border-radius: 50%;
+            animation: starBurst 2s ease-out forwards;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        body.light-theme .star-transition {
+            background: #dc143c;
+        }
+        body.sunset-theme .star-transition {
+            background: #ff8c00;
+        }
+        body.cosmos-theme .star-transition {
+            background: #8a2be2;
+        }
+        @keyframes starBurst {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(2); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        .cyberpunk-text-container {
+            position: relative;
+            text-align: center;
+            padding: 20px;
+            border: 2px solid rgba(0, 230, 255, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 230, 255, 0.2);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        body.light-theme .cyberpunk-text-container {
+            border: 2px solid rgba(255, 0, 87, 0.3);
+            box-shadow: 0 0 20px rgba(255, 0, 87, 0.2);
+        }
+        body.sunset-theme .cyberpunk-text-container {
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            box-shadow: 0 0 20px rgba(255, 140, 0, 0.2);
+        }
+        body.cosmos-theme .cyberpunk-text-container {
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+        }
+        .cyberpunk-text {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 30px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+        .cyberpunk-text span {
+            opacity: 0;
+            animation: typeLetter 0.07s ease forwards;
+            color: #00e6ff;
+            text-shadow: 0 0 10px rgba(0, 230, 255, 0.9), 0 0 20px rgba(0, 230, 255, 0.6);
+            will-change: opacity, transform;
+        }
+        body.light-theme .cyberpunk-text span {
+            color: #ff0057;
+            text-shadow: 0 0 10px rgba(255, 0, 87, 0.9), 0 0 20px rgba(255, 0, 87, 0.6);
+        }
+        body.sunset-theme .cyberpunk-text span {
+            color: #ff8c00;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.9), 0 0 20px rgba(255, 140, 0, 0.6);
+        }
+        body.cosmos-theme .cyberpunk-text span {
+            color: #e6e6fa;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.9), 0 0 20px rgba(138, 43, 226, 0.6);
+        }
+        .cyberpunk-text span:nth-child(1) { animation-delay: 0.5s; }
+        .cyberpunk-text span:nth-child(2) { animation-delay: 0.57s; }
+        .cyberpunk-text span:nth-child(3) { animation-delay: 0.64s; }
+        .cyberpunk-text span:nth-child(4) { animation-delay: 0.71s; }
+        .cyberpunk-text span:nth-child(5) { animation-delay: 0.78s; }
+        .cyberpunk-text span:nth-child(6) { animation-delay: 0.85s; }
+        .cyberpunk-text span:nth-child(7) { animation-delay: 0.92s; }
+        .cyberpunk-text span:nth-child(8) { animation-delay: 0.99s; }
+        .cyberpunk-text span:nth-child(9) { animation-delay: 1.06s; }
+        .cyberpunk-text span:nth-child(10) { animation-delay: 1.13s; }
+        .cyberpunk-text span:nth-child(11) { animation-delay: 1.2s; }
+        .cyberpunk-text span:nth-child(12) { animation-delay: 1.27s; }
+        .cyberpunk-text span:nth-child(13) { animation-delay: 1.34s; }
+        .cyberpunk-text span:nth-child(14) { animation-delay: 1.41s; }
+        .cyberpunk-text span:nth-child(15) { animation-delay: 1.48s; }
+        .cyberpunk-text span:nth-child(16) { animation-delay: 1.55s; }
+        .cyberpunk-text span:nth-child(17) { animation-delay: 1.62s; }
+        .cyberpunk-text span:nth-child(18) { animation-delay: 1.69s; }
+        .cyberpunk-text span:nth-child(19) { animation-delay: 1.76s; }
+        .cyberpunk-text span:nth-child(20) { animation-delay: 1.83s; }
+        @keyframes typeLetter {
+            0% { opacity: 0; transform: translateX(-8px) translateY(8px) scale(0.8); }
+            100% { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
+        }
+        .cyberpunk-text::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(0, 230, 255, 0.4), transparent);
+            animation: scanLine 2s linear infinite;
+            z-index: -1;
+        }
+        body.light-theme .cyberpunk-text::before {
+            background: linear-gradient(90deg, rgba(255, 0, 87, 0.4), transparent);
+        }
+        body.sunset-theme .cyberpunk-text::before {
+            background: linear-gradient(90deg, rgba(255, 140, 0, 0.4), transparent);
+        }
+        body.cosmos-theme .cyberpunk-text::before {
+            background: linear-gradient(90deg, rgba(138, 43, 226, 0.4), transparent);
+        }
+        @keyframes scanLine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .cyberpunk-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: transparent;
+            animation: glitch 0.15s infinite alternate;
+            clip-path: polygon(0 0, 100% 0, 100% 10%, 0 10%);
+            z-index: -1;
+        }
+        @keyframes glitch {
+            0% { transform: translate(1.5px, 1.5px); }
+            100% { transform: translate(-1.5px, -1.5px); }
+        }
+        .cyberpunk-text-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+            opacity: 0.5;
+            z-index: -2;
+            animation: flicker 3s infinite;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.55; }
+        }
+        .arc {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00e6ff;
+            border-radius: 50%;
+            animation: arcFlash 0.8s ease-in-out infinite;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+        body.light-theme .arc {
+            background: #ff0057;
+        }
+        body.sunset-theme .arc {
+            background: #ff8c00;
+        }
+        body.cosmos-theme .arc {
+            background: #8a2be2;
+        }
+        @keyframes arcFlash {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+        .glitch-static {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/noise-lines.png');
+            opacity: 0.05;
+            animation: staticFlicker 0.3s infinite;
+            z-index: -3;
+        }
+        @keyframes staticFlicker {
+            0% { opacity: 0.05; }
+            50% { opacity: 0.08; }
+            100% { opacity: 0.05; }
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px;
+                padding: 20px;
+            }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            p { font-size: 1em; }
+            .scrollable-content { max-height: 70vh; }
+            .language-toggle, .theme-toggle { font-size: 0.8em; padding: 5px 10px; }
+            .theme-toggle { right: 60px; }
+            .cyberpunk-text { font-size: 20px; }
+            .cyberpunk-text-container { padding: 15px; }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="stars"></div>
+    <div class="comet" id="comet1"></div>
+    <div class="comet" id="comet2"></div>
+    <div class="comet" id="comet3"></div>
+    <div class="comet" id="comet4"></div>
+    <div class="container" id="mainContainer">
+        <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+        <button class="language-toggle" onclick="toggleLanguage()">EN</button>
+        <h1 data-key="main-title">Письмо моей любви к Аннюте</h1>
+        <div class="scrollable-content">
+            <p class="date" data-key="date"></p>
+            <h2 data-key="section1-title">Моя комета</h2>
+            <p style="--order: 1" data-key="section1-p1">Я полюбил тебя не в пустоте одиночества — нет, мой мир был полон, уютен, словно старый дом, согретый светом свечей. Но ты, Аннюта, ворвалась в него, как пылающая комета, разорвавшая тьму моего небосвода. Твои глаза, твой смех, твоя душа — они стали моими звёздами, моим солнцем, моим всем.</p>
+            <p style="--order: 2" data-key="section1-p2">Я полюбил тебя не за то, что ты заполнила пустоту, а за то, что ты сделала мой мир бесконечным, превратив каждый день в гимн любви. И даже теперь, спустя время, эта любовь горит во мне, неугасимая, как вечный огонь, что не знает ни ветра, ни дождя.</p>
+            <h2 data-key="section2-title">Осколки</h2>
+            <p style="--order: 3" data-key="section2-p1">Но судьба, жестокая и неумолимая, разлучила нас. Я хожу по осколкам наших воспоминаний, и каждый шаг — это боль, каждый взгляд в прошлое — как удар. Мы расстались, и мой мир, некогда полный света, погрузился в тень.</p>
+            <p style="--order: 4" data-key="section2-p2">Я не виню тебя, Аннюта, ведь любовь — это не цепи, а крылья, и ты всегда была свободной. Но я не могу перестать бороться за тебя. Каждое моё слово, каждый поступок — это попытка дотянуться до тебя через пропасть, что нас разделила.</p>
+            <h2 data-key="section3-title">Новый шанс</h2>
+            <p style="--order: 5" data-key="section3-p1">А помнишь, как всё начиналось? Ты дала мне шанс, и в тот момент я почувствовал, будто весь мир затаил дыхание. Твоя рука в моей, твой тихий смех, наши прогулки под звездами — всё это было таким хрупким, таким драгоценным.</p>
+            <p style="--order: 6" data-key="section3-p2">Я мечтаю, Аннюта, о новом шансе. Не о том, чтобы вернуть прошлое, но о том, чтобы построить новое — вместе. Было бы так славно попробовать снова, с той же нежностью, но с новой силой, с новой верой в нас. Аннюта, моё сердце всё ещё бьётся в ритме нашей истории. Есть ли в твоём небе место для новой звезды, для нас? Я жду твоего ответа, как ждал той первой искры в твоих глазах</p>
+        </div>
+        <button class="send-button" onclick="sendLetter()" data-key="send-button">Отправить в небо</button>
+        <button class="replay-button" onclick="sendLetter()" data-key="replay-button" style="display: none;">Посмотреть снова</button>
+    </div>
+    <div class="writing-animation" id="writingAnimation">
+        <div class="glitch-static"></div>
+        <div class="cyberpunk-text-container">
+            <div class="cyberpunk-text" data-text="Ты мне очень сильно дорога" data-key="final-message"></div>
+            <div class="arcs">
+                <div class="arc" style="left: 10%; top: 30%; animation-delay: 0.2s;"></div>
+                <div class="arc" style="left: 20%; top: 40%; animation-delay: 0.5s;"></div>
+                <div class="arc" style="left: 30%; top: 50%; animation-delay: 0.8s;"></div>
+                <div class="arc" style="left: 70%; top: 30%; animation-delay: 0.3s;"></div>
+                <div class="arc" style="left: 80%; top: 40%; animation-delay: 0.6s;"></div>
+            </div>
+            <div class="star-transition" style="animation-delay: 3s;"></div>
+        </div>
+    </div>
+    <script>
+        const translations = {
+            ru: {
+                title: "Письмо Аннюте",
+                "main-title": "Письмо моей любви к Аннюте",
+                date: "Написано 3 мая 2025 года",
+                "section1-title": "Моя комета",
+                "section1-p1": "Я полюбил тебя не в пустоте одиночества — нет, мой мир был полон, уютен, словно старый дом, согретый светом свечей. Но ты, Аннюта, ворвалась в него, как пылающая комета, разорвавшая тьму моего небосвода. Твои глаза, твой смех, твоя душа — они стали моими звёздами, моим солнцем, моим всем.",
+                "section1-p2": "Я полюбил тебя не за то, что ты заполнила пустоту, а за то, что ты сделала мой мир бесконечным, превратив каждый день в гимн любви. И даже теперь, спустя время, эта любовь горит во мне, неугасимая, как вечный огонь, что не знает ни ветра, ни дождя.",
+                "section2-title": "Осколки",
+                "section2-p1": "Но судьба, жестокая и неумолимая, разлучила нас. Я хожу по осколкам наших воспоминаний, и каждый шаг — это боль, каждый взгляд в прошлое — как удар. Мы расстались, и мой мир, некогда полный света, погрузился в тень.",
+                "section2-p2": "Я не виню тебя, Аннюта, ведь любовь — это не цепи, а крылья, и ты всегда была свободной. Но я не могу перестать бороться за тебя. Каждое моё слово, каждый поступок — это попытка дотянуться до тебя через пропасть, что нас разделила.",
+                "section3-title": "Новый шанс",
+                "section3-p1": "А помнишь, как всё начиналось? Ты дала мне шанс, и в тот момент я почувствовал, будто весь мир затаил дыхание. Твоя рука в моей, твой тихий смех, наши прогулки под звездами — всё это было таким хрупким, таким драгоценным.",
+                "section3-p2": "Я мечтаю, Аннюта, о новом шансе. Не о том, чтобы вернуть прошлое, но о том, чтобы построить новое — вместе. Было бы так славно попробовать снова, с той же нежностью, но с новой силой, с новой верой в нас.",
+                "send-button": "Отправить в небо",
+                "replay-button": "Посмотреть снова",
+                "final-message": "Ты мне очень сильно дорога"
+            },
+            en: {
+                title: "Letter to Anna",
+                "main-title": "A Letter to My Love, Anna",
+                date: "Written on May 3, 2025",
+                "section1-title": "My Comet",
+                "section1-p1": "I didn’t fall in love with you in the void of loneliness—no, my world was full, cozy, like an old house warmed by the glow of candles. But you, Anna, burst into it like a blazing comet, tearing through the darkness of my sky. Your eyes, your laughter, your soul—they became my stars, my sun, my everything.",
+                "section1-p2": "I loved you not for filling a void, but for making my world infinite, turning every day into a hymn of love. Even now, after all this time, that love burns within me, unquenchable, like an eternal flame that knows neither wind nor rain.",
+                "section2-title": "Fragments",
+                "section2-p1": "But fate, cruel and unrelenting, tore us apart. I walk among the fragments of our memories, and every step is pain, every glance at the past a blow. We parted, and my world, once full of light, sank into shadow.",
+                "section2-p2": "I don’t blame you, Anna, for love is not chains but wings, and you were always free. Yet I can’t stop fighting for you. Every word I speak, every action I take, is an attempt to reach you across the chasm that divides us.",
+                "section3-title": "A New Chance",
+                "section3-p1": "Do you remember how it all began? You gave me a chance, and in that moment, it felt as if the whole world held its breath. Your hand in mine, your quiet laughter, our walks under the stars—all of it was so fragile, so precious.",
+                "section3-p2": "I dream, Anna, of a new chance. Not to reclaim the past, but to build something new—together. It would be so wonderful to try again, with the same tenderness but with new strength, with new faith in us. Anna, my heart still beats to the rhythm of our story. Is there a place in your sky for a new star, for us? I await your answer, as I once awaited that first spark in your eyes.",
+                "send-button": "Send to the Sky",
+                "replay-button": "Watch Again",
+                "final-message": "You are very dear to me"
+            }
+        };
+
+        let currentLanguage = 'ru';
+        let currentTheme = 'dark';
+        const themes = ['dark', 'light', 'sunset', 'cosmos'];
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'ru' ? 'en' : 'ru';
+            document.querySelector('.language-toggle').textContent = currentLanguage === 'ru' ? 'EN' : 'RU';
+            document.documentElement.lang = currentLanguage;
+            updateText();
+        }
+
+        function toggleTheme() {
+            const currentIndex = themes.indexOf(currentTheme);
+            currentTheme = themes[(currentIndex + 1) % themes.length];
+            document.body.classList.remove(...themes.map(t => `${t}-theme`));
+            document.body.classList.add(`${currentTheme}-theme`);
+            document.querySelector('.theme-toggle').textContent = {
+                dark: '☀️',
+                light: '🌅',
+                sunset: '🌌',
+                cosmos: '🌙'
+            }[currentTheme];
+        }
+
+        function updateText() {
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[currentLanguage][key]) {
+                    if (element.tagName === 'TITLE') {
+                        document.title = translations[currentLanguage][key];
+                    } else if (key === 'final-message') {
+                        const text = translations[currentLanguage][key];
+                        element.setAttribute('data-text', text);
+                        element.innerHTML = text.split('').map(char => `<span>${char}</span>`).join('');
+                    } else {
+                        element.textContent = translations[currentLanguage][key];
+                    }
+                }
+            });
+        }
+
+        function randomizeComet(comet) {
+            const startX = Math.random() * 100;
+            const angle = 30 + Math.random() * 30;
+            const delay = Math.random() * 8;
+            comet.style.left = `${startX}%`;
+            comet.style.animation = `comet-fall 8s linear infinite`;
+            comet.style.animationDelay = `${delay}s`;
+            comet.style.transform = `rotate(${angle}deg)`;
+        }
+
+        function sendLetter() {
+            const container = document.getElementById('mainContainer');
+            const writingAnimation = document.getElementById('writingAnimation');
+            const sendButton = document.querySelector('.send-button');
+            const replayButton = document.querySelector('.replay-button');
+            container.style.opacity = '0';
+            setTimeout(() => {
+                container.style.display = 'none';
+                writingAnimation.style.display = 'flex';
+                sendButton.style.display = 'none';
+                replayButton.style.display = 'block';
+            }, 500);
+            setTimeout(() => {
+                writingAnimation.style.display = 'none';
+                container.style.display = 'block';
+                container.style.opacity = '1';
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateText();
+            document.querySelectorAll('.comet').forEach(comet => randomizeComet(comet));
+        });
+    </script>
+</body>
+</html>

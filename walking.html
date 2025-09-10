@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Планировщик прогулок</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary-color: #d4a5a5;
+            --secondary-color: #f5e9e2;
+            --accent-color: #b5838d;
+            --text-color: #3a3335;
+            --background-color: #fffaf7;
+            --shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #d4a5a5, #b5838d);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #8b5e68;
+            --secondary-color: #2a2a2a;
+            --accent-color: #d4a5a5;
+            --text-color: #e0e0e0;
+            --background-color: #1a1a1a;
+            --shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+            --gradient: linear-gradient(135deg, #8b5e68, #d4a5a5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+            background: var(--gradient);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            opacity: 0.1;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+        }
+
+        .left-panel, .right-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        [data-theme="dark"] .left-panel,
+        [data-theme="dark"] .right-panel {
+            background: var(--secondary-color);
+        }
+
+        .left-panel:hover, .right-panel:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--primary-color);
+        }
+
+        .date-picker {
+            margin-bottom: 40px;
+        }
+
+        .month-navigator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-navigator button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .month-navigator button:hover {
+            transform: scale(1.2);
+        }
+
+        .calendar {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 5px;
+        }
+
+        .calendar th {
+            padding: 15px;
+            text-align: center;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .calendar td {
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            transition: all 0.2s ease;
+        }
+
+        .calendar td:hover:not(.disabled) {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .calendar td.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .calendar td.today {
+            border: 2px solid var(--accent-color);
+            font-weight: 600;
+        }
+
+        .calendar td.disabled {
+            color: #ddd;
+            cursor: not-allowed;
+        }
+
+        .time-selector {
+            margin-bottom: 40px;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .time-slot {
+            background: var(--secondary-color);
+            border-radius: 25px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-slot:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .time-slot.selected {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .activity-selector {
+            margin-bottom: 40px;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+        }
+
+        .activity-card {
+            background: var(--secondary-color);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .activity-card.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .activity-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .selected-dates {
+            margin-top: 20px;
+        }
+
+        .date-card {
+            background: var(--secondary-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .date-card:hover {
+            transform: translateX(5px);
+        }
+
+        .date-info h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 8px;
+            color: var(--accent-color);
+        }
+
+        .date-info p.notes {
+            font-style: italic;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        .date-actions button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.3rem;
+            transition: color 0.2s ease;
+        }
+
+        .date-actions button:hover {
+            color: var(--accent-color);
+        }
+
+        .notes-section {
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .empty-state .activity-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            header {
+                padding: 40px 0;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .activity-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="home-button">На главную</a>
+            <h1>Планировщик прогулок</h1>
+            <p class="tagline">Создавайте незабываемые моменты вместе</p>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </header>
+        
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="date-picker">
+                    <h2 class="section-title">Выберите дату</h2>
+                    <div class="month-navigator">
+                        <button id="prevMonth">❮</button>
+                        <h3 id="currentMonth">Апрель 2025</h3>
+                        <button id="nextMonth">❯</button>
+                    </div>
+                    <table class="calendar" id="calendar">
+                        <thead>
+                            <tr>
+                                <th>Пн</th>
+                                <th>Вт</th>
+                                <th>Ср</th>
+                                <th>Чт</th>
+                                <th>Пт</th>
+                                <th>Сб</th>
+                                <th>Вс</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendarBody">
+                            <!-- JS will fill this -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="time-selector">
+                    <h2 class="section-title">Выберите время</h2>
+                    <div class="time-slots" id="timeSlots">
+                        <div class="time-slot" data-time="10:00">10:00</div>
+                        <div class="time-slot" data-time="11:00">11:00</div>
+                        <div class="time-slot" data-time="12:00">12:00</div>
+                        <div class="time-slot" data-time="13:00">13:00</div>
+                        <div class="time-slot" data-time="14:00">14:00</div>
+                        <div class="time-slot" data-time="15:00">15:00</div>
+                        <div class="time-slot" data-time="16:00">16:00</div>
+                        <div class="time-slot" data-time="17:00">17:00</div>
+                    </div>
+                </div>
+                
+                <div class="activity-selector">
+                    <h2 class="section-title">Чем займемся?</h2>
+                    <div class="activity-grid">
+                        <div class="activity-card" data-activity="cafe">
+                            <div class="activity-icon">☕</div>
+                            <div>Кафе</div>
+                        </div>
+                        <div class="activity-card" data-activity="park">
+                            <div class="activity-icon">🌳</div>
+                            <div>Парк</div>
+                        </div>
+                        <div class="activity-card" data-activity="cinema">
+                            <div class="activity-icon">🎬</div>
+                            <div>Кино</div>
+                        </div>
+                        <div class="activity-card" data-activity="restaurant">
+                            <div class="activity-icon">🍽️</div>
+                            <div>Ресторан</div>
+                        </div>
+                        <div class="activity-card" data-activity="museum">
+                            <div class="activity-icon">🏛️</div>
+                            <div>Музей</div>
+                        </div>
+                        <div class="activity-card" data-activity="concert">
+                            <div class="activity-icon">🎵</div>
+                            <div>Концерт</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notes-section">
+                    <h2 class="section-title">Заметки (опционально)</h2>
+                    <textarea id="dateNotes" placeholder="Добавьте заметки к прогулке (например, название ресторана, пожелания)..."></textarea>
+                </div>
+                
+                <button id="addDateBtn" class="btn">Добавить прогулку</button>
+            </div>
+            
+            <div class="right-panel">
+                <h2 class="section-title">Запланированные прогулки</h2>
+                
+                <div id="selectedDates" class="selected-dates">
+                    <div class="empty-state">
+                        <div class="activity-icon">💌</div>
+                        <p>Здесь будут отображаться запланированные прогулки</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let selectedDate = null;
+            let selectedTime = null;
+            let selectedActivity = null;
+            let plannedDates = JSON.parse(localStorage.getItem('plannedDates')) || [];
+            let telegramSettings = {
+                botToken: '7236920382:AAFoDyrXdr-p3ZCCqKIqWfb2OvRT9oB91R4',
+                chatId: '1042168412'
+            };
+            
+            // Calendar functionality
+            const calendarBody = document.getElementById('calendarBody');
+            const currentMonthElement = document.getElementById('currentMonth');
+            const prevMonthBtn = document.getElementById('prevMonth');
+            const nextMonthBtn = document.getElementById('nextMonth');
+            const addDateBtn = document.getElementById('addDateBtn');
+            const selectedDatesContainer = document.getElementById('selectedDates');
+            const themeToggle = document.getElementById('themeToggle');
+            const dateNotesTextarea = document.getElementById('dateNotes');
+            
+            let currentDate = new Date();
+            let displayMonth = currentDate.getMonth();
+            let displayYear = currentDate.getFullYear();
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+            
+            // Initialize calendar and notifications
+            generateCalendar(displayMonth, displayYear);
+            scheduleNotifications();
+            renderPlannedDates();
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            // Previous month button
+            prevMonthBtn.addEventListener('click', function() {
+                displayMonth--;
+                if (displayMonth < 0) {
+                    displayMonth = 11;
+                    displayYear--;
+                }
+                generateCalendar(displayMonth, displayYear);
+            });
+            
+            // Next month button
+            nextMonthBtn.addEventListener('click', function() {
+                displayMonth++;
+                if (displayMonth > 11) {
+                    displayMonth = 0;
+                    displayYear++;
+                }
+                generateCalendar(displayMonth, displayYear);
+            });
+            
+            // Generate calendar
+            function generateCalendar(month, year) {
+                calendarBody.innerHTML = '';
+                
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                
+                let dayOfWeek = firstDay.getDay();
+                dayOfWeek = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                
+                currentMonthElement.textContent = getMonthName(month) + ' ' + year;
+                
+                let date = 1;
+                for (let i = 0; i < 6; i++) {
+                    const row = document.createElement('tr');
+                    
+                    for (let j = 0; j < 7; j++) {
+                        const cell = document.createElement('td');
+                        
+                        if (i === 0 && j < dayOfWeek) {
+                            row.appendChild(cell);
+                        } else if (date > daysInMonth) {
+                            break;
+                        } else {
+                            cell.textContent = date;
+                            
+                            const cellDate = new Date(year, month, date);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            
+                            if (cellDate < today) {
+                                cell.classList.add('disabled');
+                            } else {
+                                cell.addEventListener('click', function() {
+                                    document.querySelectorAll('.calendar td.selected').forEach(td => {
+                                        td.classList.remove('selected');
+                                    });
+                                    this.classList.add('selected');
+                                    selectedDate = new Date(year, month, parseInt(this.textContent));
+                                });
+                            }
+                            
+                            if (date === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear()) {
+                                cell.classList.add('today');
+                            }
+                            
+                            row.appendChild(cell);
+                            date++;
+                        }
+                    }
+                    
+                    calendarBody.appendChild(row);
+                    if (date > daysInMonth) {
+                        break;
+                    }
+                }
+            }
+            
+            // Get month name
+            function getMonthName(month) {
+                const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+                return monthNames[month];
+            }
+            
+            // Format date in Russian
+            function formatDate(date) {
+                const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+                const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+                
+                return `${days[date.getDay()]}, ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+            }
+            
+            // Time slot selection
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot.selected').forEach(s => {
+                        s.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectedTime = this.getAttribute('data-time');
+                });
+            });
+            
+            // Activity selection
+            document.querySelectorAll('.activity-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.activity-card.selected').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectedActivity = this.getAttribute('data-activity');
+                });
+            });
+            
+            // Activity name mapping
+            function getActivityName(activityCode) {
+                const activities = {
+                    'cafe': 'Кафе',
+                    'park': 'Прогулка в парке',
+                    'cinema': 'Кино',
+                    'restaurant': 'Ресторан',
+                    'museum': 'Музей',
+                    'concert': 'Концерт'
+                };
+                return activities[activityCode] || activityCode;
+            }
+            
+            // Activity icon mapping
+            function getActivityIcon(activityCode) {
+                const icons = {
+                    'cafe': '☕',
+                    'park': '🌳',
+                    'cinema': '🎬',
+                    'restaurant': '🍽️',
+                    'museum': '🏛️',
+                    'concert': '🎵'
+                };
+                return icons[activityCode] || '❤️';
+            }
+            
+            // Send Telegram notification
+            async function sendTelegramNotification(message) {
+                try {
+                    const url = `https://api.telegram.org/bot${telegramSettings.botToken}/sendMessage`;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chat_id: telegramSettings.chatId,
+                            text: message
+                        })
+                    });
+                    const result = await response.json();
+                    if (!result.ok) {
+                        console.error('Ошибка отправки уведомления:', result);
+                    }
+                    return result;
+                } catch (error) {
+                    console.error('Ошибка отправки уведомления:', error);
+                }
+            }
+            
+            // Schedule notifications
+            function scheduleNotifications() {
+                plannedDates.forEach(dateObj => {
+                    const eventDate = new Date(dateObj.date);
+                    const [hours, minutes] = dateObj.time.split(':');
+                    eventDate.setHours(parseInt(hours), parseInt(minutes));
+                    
+                    // Schedule notification 24 hours before
+                    const dayBefore = new Date(eventDate.getTime() - 24 * 60 * 60 * 1000);
+                    const timeToDayBefore = dayBefore.getTime() - Date.now();
+                    
+                    if (timeToDayBefore > 0) {
+                        setTimeout(() => {
+                            const notesText = dateObj.notes ? `\nЗаметки: ${dateObj.notes}` : '';
+                            const message = `Напоминание: Завтра в ${dateObj.time} у вас запланирована прогулка (${getActivityName(dateObj.activity)})${notesText}`;
+                            sendTelegramNotification(message);
+                        }, timeToDayBefore);
+                    }
+                    
+                    // Schedule notification 2 hours before
+                    const twoHoursBefore = new Date(eventDate.getTime() - 2 * 60 * 60 * 1000);
+                    const timeToTwoHours = twoHoursBefore.getTime() - Date.now();
+                    
+                    if (timeToTwoHours > 0) {
+                        setTimeout(() => {
+                            const notesText = dateObj.notes ? `\nЗаметки: ${dateObj.notes}` : '';
+                            const message = `Скоро прогулка! Через 2 часа в ${dateObj.time} (${getActivityName(dateObj.activity)})${notesText}`;
+                            sendTelegramNotification(message);
+                        }, timeToTwoHours);
+                    }
+                });
+            }
+            
+            // Add date to planned dates
+            addDateBtn.addEventListener('click', async function() {
+                if (!selectedDate || !selectedTime || !selectedActivity) {
+                    alert('Пожалуйста, выберите дату, время и тип прогулки');
+                    return;
+                }
+                
+                const dateNotes = dateNotesTextarea.value.trim();
+                const dateId = Date.now();
+                const newDate = {
+                    id: dateId,
+                    date: selectedDate,
+                    time: selectedTime,
+                    activity: selectedActivity,
+                    notes: dateNotes
+                };
+                
+                plannedDates.push(newDate);
+                localStorage.setItem('plannedDates', JSON.stringify(plannedDates));
+                
+                // Send immediate Telegram notification
+                const notesText = dateNotes ? `\nЗаметки: ${dateNotes}` : '';
+                const message = `Новая прогулка запланирована!\n${formatDate(new Date(selectedDate))} в ${selectedTime}\nАктивность: ${getActivityName(selectedActivity)}${notesText}`;
+                await sendTelegramNotification(message);
+                
+                renderPlannedDates();
+                scheduleNotifications();
+                
+                // Reset selections
+                document.querySelectorAll('.calendar td.selected').forEach(td => {
+                    td.classList.remove('selected');
+                });
+                document.querySelectorAll('.time-slot.selected').forEach(s => {
+                    s.classList.remove('selected');
+                });
+                document.querySelectorAll('.activity-card.selected').forEach(c => {
+                    c.classList.remove('selected');
+                });
+                dateNotesTextarea.value = '';
+                
+                selectedDate = null;
+                selectedTime = null;
+                selectedActivity = null;
+            });
+            
+            // Render planned dates
+            function renderPlannedDates() {
+                if (plannedDates.length === 0) {
+                    selectedDatesContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="activity-icon">💌</div>
+                            <p>Здесь будут отображаться запланированные прогулки</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                selectedDatesContainer.innerHTML = '';
+                
+                // Sort dates chronologically
+                plannedDates.sort((a, b) => new Date(a.date) - new Date(b.date));
+                
+                plannedDates.forEach(dateObj => {
+                    const dateCard = document.createElement('div');
+                    dateCard.className = 'date-card';
+                    dateCard.id = `date-${dateObj.id}`;
+                    
+                    const notesHtml = dateObj.notes ? `<p class="notes">${dateObj.notes}</p>` : '';
+                    
+                    dateCard.innerHTML = `
+                        <div class="date-info">
+                            <h3>${getActivityIcon(dateObj.activity)} ${getActivityName(dateObj.activity)}</h3>
+                            <p>${formatDate(new Date(dateObj.date))} в ${dateObj.time}</p>
+                            ${notesHtml}
+                        </div>
+                        <div class="date-actions">
+                            <button class="delete-btn" data-id="${dateObj.id}">✕</button>
+                        </div>
+                    `;
+                    
+                    selectedDatesContainer.appendChild(dateCard);
+                });
+                
+                // Add delete event listeners
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const dateId = parseInt(this.getAttribute('data-id'));
+                        plannedDates = plannedDates.filter(d => d.id !== dateId);
+                        localStorage.setItem('plannedDates', JSON.stringify(plannedDates));
+                        renderPlannedDates();
+                        scheduleNotifications();
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

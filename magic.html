@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Волшебное послание</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Philosopher:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a1c 0%, #1c1c4a 100%);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      color: #e6e6ff;
+      position: relative;
+      opacity: 0;
+      transition: opacity 1.2s ease-in;
+    }
+
+    body.loaded {
+      opacity: 1;
+    }
+
+    .container {
+      text-align: center;
+      position: relative;
+      padding: 2.5rem;
+      max-width: 900px;
+      width: 95%;
+      z-index: 5;
+    }
+
+    .message {
+      background: rgba(20, 20, 40, 0.3);
+      padding: 3rem;
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(147, 51, 234, 0.4), 
+                  inset 0 0 15px rgba(103, 232, 249, 0.2);
+      border: 1px solid rgba(147, 51, 234, 0.2);
+      margin-bottom: 2.5rem;
+      backdrop-filter: blur(8px);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 0 60px rgba(147, 51, 234, 0.6), 
+                  inset 0 0 20px rgba(103, 232, 249, 0.3);
+    }
+
+    .message::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #9333ea, #67e8f9, #d8b4fe, #9333ea);
+      background-size: 400% 400%;
+      z-index: -1;
+      border-radius: 18px;
+      filter: blur(6px);
+      opacity: 0.3;
+      transition: opacity 0.4s ease;
+      animation: glowingEdge 12s ease infinite;
+    }
+
+    .message:hover::before {
+      opacity: 0.8;
+    }
+
+    .message::after {
+      content: '';
+      position: absolute;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle, rgba(147, 51, 234, 0.15) 0%, transparent 70%);
+      opacity: 0.5;
+      animation: auraSwirl 15s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes auraSwirl {
+      0% { transform: rotate(0deg); opacity: 0.5; }
+      50% { transform: rotate(180deg); opacity: 0.7; }
+      100% { transform: rotate(360deg); opacity: 0.5; }
+    }
+
+    @keyframes glowingEdge {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-family: 'Philosopher', sans-serif;
+      color: #d8b4fe;
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-shadow: 0 0 12px rgba(216, 180, 254, 0.7),
+                   0 0 24px rgba(147, 51, 234, 0.3);
+      letter-spacing: 4px;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      transform: translateY(-25px);
+      position: relative;
+      animation: fadeInDown 1.2s ease forwards 0.5s;
+    }
+
+    h1::after {
+      content: '✨ *･ﾟﾟ･*:.｡..｡.:*ﾟ:*:✨';
+      display: block;
+      font-size: 1rem;
+      color: rgba(216, 180, 254, 0.6);
+      margin-top: 0.8rem;
+      letter-spacing: 5px;
+    }
+
+    .text-line {
+      color: #e6e6ff;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      line-height: 1.8;
+      margin-bottom: 1.8rem;
+      text-align: left;
+      min-height: 2.2em;
+      position: relative;
+      text-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+      white-space: pre-wrap;
+      letter-spacing: 0.5px;
+    }
+
+    .signature {
+      font-family: 'Philosopher', sans-serif;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+      color: #67e8f9;
+      margin-top: 2.5rem;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(103, 232, 249, 0.7);
+      text-align: right;
+      min-height: 1.8em;
+      position: relative;
+      font-style: italic;
+      white-space: pre-wrap;
+    }
+
+    .char {
+      opacity: 0;
+      display: inline-block;
+      position: relative;
+      transform: translateY(12px);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out, text-shadow 0.25s ease;
+    }
+
+    .char.visible {
+      opacity: 1;
+      transform: translateY(0);
+      text-shadow: 0 0 8px rgba(216, 180, 254, 0.5);
+    }
+
+    .char.magical {
+      color: #d8b4fe;
+      text-shadow: 0 0 6px #d8b4fe, 0 0 12px #9333ea;
+    }
+
+    .button-container {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: linear-gradient(135deg, #9333ea 0%, #5b21b6 100%);
+      color: #e6e6ff;
+      border: none;
+      padding: 14px 35px;
+      border-radius: 50px;
+      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+      cursor: pointer;
+      transition: all 0.4s ease;
+      font-family: 'Philosopher', sans-serif;
+      letter-spacing: 1.5px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+      opacity: 0;
+      transform: translateY(25px);
+    }
+
+    button:hover, button:focus {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(147, 51, 234, 0.7);
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.6s ease;
+    }
+
+    button:hover::before, button:focus::before {
+      left: 100%;
+    }
+
+    #effect-toggle {
+      background: linear-gradient(135deg, #67e8f9 0%, #2c5282 100%);
+    }
+
+    .magic-circle {
+      position: absolute;
+      border: 2px solid rgba(147, 51, 234, 0.3);
+      border-radius: 50%;
+      width: 320px;
+      height: 320px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+      opacity: 0;
+      z-index: 1;
+      animation: fadeIn 3s ease-out forwards, rotate 25s linear infinite;
+    }
+
+    .magic-circle::before, .magic-circle::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .magic-circle::before {
+      width: 110%;
+      height: 110%;
+      border: 1px solid rgba(103, 232, 249, 0.3);
+      top: -5%;
+      left: -5%;
+      animation: rotate 18s linear infinite reverse;
+    }
+
+    .magic-circle::after {
+      width: 90%;
+      height: 90%;
+      border: 1px solid rgba(216, 180, 254, 0.3);
+      top: 5%;
+      left: 5%;
+      animation: rotate 12s linear infinite;
+    }
+
+    .inner-circle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 70%;
+      height: 70%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(103, 232, 249, 0.25);
+      animation: pulseGlow 3.5s ease-in-out infinite alternate;
+    }
+
+    .arcane-symbol {
+      position: absolute;
+      font-size: 1.2rem;
+      color: rgba(216, 180, 254, 0.7);
+      text-shadow: 0 0 8px rgba(216, 180, 254, 0.8);
+      animation: arcanePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes arcanePulse {
+      0% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 0.7; transform: scale(1); }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 12px rgba(103, 232, 249, 0.3); }
+      100% { box-shadow: 0 0 35px rgba(103, 232, 249, 0.8); }
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 0.8; }
+    }
+
+    .portal-effect {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 0%, rgba(10, 10, 28, 0.92) 65%);
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .star {
+      position: absolute;
+      background-color: #e6e6ff;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      opacity: 0.6;
+      z-index: 1;
+      will-change: opacity;
+    }
+
+    .magic-particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(circle, #d8b4fe, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+      filter: blur(2px);
+      will-change: transform, opacity;
+    }
+
+    .rune-particle {
+      position: absolute;
+      font-size: 0.8rem;
+      color: rgba(103, 232, 249, 0.8);
+      text-shadow: 0 0 6px rgba(103, 232, 249, 0.9);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 10;
+      will-change: transform, opacity;
+    }
+
+    .rune-circle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0.2;
+      pointer-events: none;
+      animation: slowRotate 100s linear infinite;
+    }
+
+    @keyframes slowRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .floating-symbol {
+      position: absolute;
+      color: rgba(216, 180, 254, 0.5);
+      font-size: 1.6rem;
+      pointer-events: none;
+      text-shadow: 0 0 6px rgba(216, 180, 254, 0.6);
+      z-index: 2;
+      user-select: none;
+      will-change: transform, opacity;
+    }
+
+    .cosmic-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 15% 25%, rgba(147, 51, 234, 0.2) 0%, transparent 25%),
+        radial-gradient(circle at 75% 65%, rgba(103, 232, 249, 0.15) 0%, transparent 30%),
+        radial-gradient(circle at 50% 50%, rgba(10, 10, 28, 0.5) 0%, rgba(10, 10, 28, 0.9) 100%);
+      z-index: 0;
+      animation: nebulaPulse 15s ease-in-out infinite;
+    }
+
+    .cosmic-background::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 40%, rgba(216, 180, 254, 0.1) 0%, transparent 20%);
+      opacity: 0.7;
+      animation: nebulaShift 25s ease-in-out infinite;
+    }
+
+    @keyframes nebulaPulse {
+      0% { opacity: 0.85; }
+      50% { opacity: 1; }
+      100% { opacity: 0.85; }
+    }
+
+    @keyframes nebulaShift {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(50px, 30px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .meteor {
+      position: absolute;
+      width: 3px;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, #e6e6ff 50%, transparent);
+      opacity: 0;
+      z-index: 2;
+      transform: rotate(45deg);
+      filter: blur(1.5px);
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    @media (max-width: 768px) {
+      .message { padding: 2rem; }
+      .text-line { margin-bottom: 1.4rem; }
+      .magic-circle { width: 280px; height: 280px; }
+      .container { padding: 1.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .message { padding: 1.5rem; }
+      .magic-circle { width: 220px; height: 220px; }
+      button { padding: 12px 25px; }
+      .container { padding: 1.2rem; }
+      h1 { margin-bottom: 1.8rem; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="cosmic-background"></div>
+  <div class="portal-effect"></div>
+  <div class="magic-circle" id="magic-circle">
+    <div class="inner-circle"></div>
+    <div class="arcane-symbol" style="top: 10%; left: 50%; transform: translate(-50%, -50%)">ᚱ</div>
+    <div class="arcane-symbol" style="bottom: 10%; left: 50%; transform: translate(-50%, 50%)">ᚢ</div>
+    <div class="arcane-symbol" style="left: 10%; top: 50%; transform: translate(-50%, -50%)">ᚦ</div>
+    <div class="arcane-symbol" style="right: 10%; top: 50%; transform: translate(50%, -50%)">ᚨ</div>
+  </div>
+
+  <svg class="rune-circle" viewBox="0 0 500 500" aria-hidden="true">
+    <path d="M250,50 A200,200 0 1,1 249.9,50" fill="none" stroke="#9333ea" stroke-width="1.2"/>
+    <path d="M250,80 A170,170 0 1,1 249.9,80" fill="none" stroke="#67e8f9" stroke-width="1.2"/>
+    <g font-family="serif" font-size="14" fill="#d8b4fe">
+      <text x="250" y="30" text-anchor="middle" transform="rotate(0 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(30 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(60 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(90 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(120 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(150 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(180 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(210 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(240 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(270 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(300 250 250)">✦</text>
+      <text x="250" y="30" text-anchor="middle" transform="rotate(330 250 250)">✦</text>
+    </g>
+    <path d="M250,120 L250,380" stroke="#d8b4fe" stroke-width="0.6" opacity="0.5"/>
+    <path d="M120,250 L380,250" stroke="#d8b4fe" stroke-width="0.6" opacity="0.5"/>
+    <circle cx="250" cy="250" r="60" fill="none" stroke="#67e8f9" stroke-width="0.6" opacity="0.4"/>
+    <path d="M190,190 L310,310 M190,310 L310,190" stroke="#d8b4fe" stroke-width="0.6" opacity="0.5"/>
+  </svg>
+
+  <div class="container">
+    <h1 id="title">Тайное послание из мира магии</h1>
+    <div class="message" role="region" aria-live="polite">
+      <div class="text-line" id="line1"></div>
+      <div class="text-line" id="line2"></div>
+      <div class="text-line" id="line3"></div>
+      <div class="text-line" id="line4"></div>
+      <div class="signature" id="signature"></div>
+    </div>
+    <div class="button-container">
+      <button id="replay" aria-label="Перезапустить анимацию">Воззвать к магии</button>
+      <button id="effect-toggle" aria-label="Переключить усиленные эффекты">Усилить чары</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Configuration
+      const config = {
+        starCount: window.innerWidth < 768 ? 60 : 180,
+        meteorInterval: 2500,
+        symbolInterval: 1200,
+        charDelay: 50,
+        lineDelay: 700,
+        titleDelay: 1200,
+        initialDelay: 800,
+      };
+
+      // Cached elements
+      const elements = {
+        title: document.getElementById('title'),
+        magicCircle: document.getElementById('magic-circle'),
+        lines: [
+          document.getElementById('line1'),
+          document.getElementById('line2'),
+          document.getElementById('line3'),
+          document.getElementById('line4'),
+          document.getElementById('signature'),
+        ],
+        buttons: document.querySelectorAll('button'),
+        container: document.querySelector('.container'),
+        message: document.querySelector('.message'),
+      };
+
+      let enhancedEffects = false;
+      let currentLineIndex = 0;
+      let charIndex = 0;
+
+      // Text content
+      const textLines = [
+        "В этом измерении я нашел твою звёздную душу, сияющую ярче всех созвездий.",
+        "Древние руны шепчут о нашей связи, пронесённой через тысячи жизней.",
+        "Ты — хранительница ключа от мира, где наши духи танцуют под музыку вселенной.",
+        "Даже самые могущественные заклинания не способны описать твою магическую суть.",
+        "Вечно твой, Хранитель Тайн",
+      ];
+
+      const magicalWords = [
+        'звёздную', 'созвездий', 'руны', 'связи', 'душу',
+        'тысячи', 'хранительница', 'ключа', 'духи', 'танцуют',
+        'вселенной', 'могущественные', 'заклинания', 'магическую',
+        'Хранитель', 'Тайн',
+      ];
+
+      const runeSymbols = ['ᚱ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚹ', 'ᛋ', 'ᛒ', 'ᛗ'];
+
+      // Utility: Debounce function
+      const debounce = (func, wait) => {
+        let timeout;
+        return (...args) => {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func(...args), wait);
+        };
+      };
+
+      // Visual Effects
+      const createStars = () => {
+        for (let i = 0; i < config.starCount; i++) {
+          const star = document.createElement('div');
+          star.className = 'star';
+          star.style.left = `${Math.random() * window.innerWidth}px`;
+          star.style.top = `${Math.random() * window.innerHeight}px`;
+          star.style.width = `${Math.random() * 2 + 1}px`;
+          star.style.height = star.style.width;
+          star.style.opacity = Math.random() * 0.6 + 0.4;
+          document.body.appendChild(star);
+
+          const twinkle = () => {
+            star.style.opacity = Math.random() * 0.4 + 0.4;
+            setTimeout(twinkle, Math.random() * 4000 + 1500);
+          };
+          twinkle();
+        }
+      };
+
+      const createMeteors = () => {
+        let lastMeteor = 0;
+        const meteorLoop = (timestamp) => {
+          if (timestamp - lastMeteor >= config.meteorInterval && document.hasFocus() && Math.random() < 0.25) {
+            const meteor = document.createElement('div');
+            meteor.className = 'meteor';
+            meteor.style.left = `${Math.random() * window.innerWidth}px`;
+            meteor.style.top = '-60px';
+            document.body.appendChild(meteor);
+
+            const endX = meteor.offsetLeft + 350;
+            const endY = meteor.offsetTop + 600;
+            const duration = Math.random() * 600 + 400;
+
+            meteor.animate([
+              { opacity: 1, transform: 'rotate(45deg) translate(0, 0)' },
+              { opacity: 0, transform: `rotate(45deg) translate(${endX - meteor.offsetLeft}px, ${endY - meteor.offsetTop}px)` },
+            ], {
+              duration,
+              easing: 'ease-in',
+              fill: 'forwards',
+            });
+
+            setTimeout(() => meteor.remove(), duration);
+            lastMeteor = timestamp;
+          }
+          requestAnimationFrame(meteorLoop);
+        };
+        requestAnimationFrame(meteorLoop);
+      };
+
+      const createFloatingSymbols = () => {
+        const magicSymbols = ['✧', '✦', '⚝', '⚜', '✵', '❈', '✴', '✺', '❋', '✯', '✫', '✬'];
+        let lastSymbol = 0;
+        const symbolLoop = (timestamp) => {
+          if (timestamp - lastSymbol >= config.symbolInterval && document.hasFocus() && Math.random() < 0.15) {
+            const symbol = document.createElement('div');
+            symbol.className = 'floating-symbol';
+            symbol.textContent = magicSymbols[Math.floor(Math.random() * magicSymbols.length)];
+            const containerRect = elements.container.getBoundingClientRect();
+
+            const side = Math.floor(Math.random() * 4);
+            let startX, startY;
+            switch (side) {
+              case 0:
+                startX = containerRect.left + Math.random() * containerRect.width;
+                startY = containerRect.top - 40;
+                break;
+              case 1:
+                startX = containerRect.right + 40;
+                startY = containerRect.top + Math.random() * containerRect.height;
+                break;
+              case 2:
+                startX = containerRect.left + Math.random() * containerRect.width;
+                startY = containerRect.bottom + 40;
+                break;
+              case 3:
+                startX = containerRect.left - 40;
+                startY = containerRect.top + Math.random() * containerRect.height;
+                break;
+            }
+
+            symbol.style.left = `${startX}px`;
+            symbol.style.top = `${startY}px`;
+            document.body.appendChild(symbol);
+
+            const endX = startX + (Math.random() * 150 - 75);
+            const endY = startY + (Math.random() * 150 - 75);
+            const duration = Math.random() * 2500 + 2500;
+
+            symbol.animate([
+              { opacity: 0, transform: 'scale(0.6)' },
+              { opacity: 0.8, transform: 'scale(1)', offset: 0.15 },
+              { opacity: 0.8, transform: 'scale(1)', offset: 0.85 },
+              { opacity: 0, transform: 'scale(0.6)' },
+            ], {
+              duration,
+              easing: 'ease-in-out',
+              fill: 'forwards',
+            });
+
+            symbol.animate([
+              { left: `${startX}px`, top: `${startY}px` },
+              { left: `${endX}px`, top: `${endY}px` },
+            ], {
+              duration,
+              easing: 'ease-in-out',
+              fill: 'forwards',
+            });
+
+            setTimeout(() => symbol.remove(), duration);
+            lastSymbol = timestamp;
+          }
+          requestAnimationFrame(symbolLoop);
+        };
+        requestAnimationFrame(symbolLoop);
+      };
+
+      const createParticle = (x, y, isRune = false) => {
+        const particle = document.createElement('div');
+        particle.className = isRune ? 'rune-particle' : 'magic-particle';
+        if (isRune) {
+          particle.textContent = runeSymbols[Math.floor(Math.random() * runeSymbols.length)];
+        }
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        document.body.appendChild(particle);
+
+        const duration = isRune ? Math.random() * 600 + 600 : Math.random() * 400 + 400;
+        const endX = x + (Math.random() * 40 - 20);
+        const endY = y - (isRune ? Math.random() * 50 + 30 : Math.random() * 40 - 20);
+
+        particle.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: `scale(${isRune ? 0.6 : 0.4}) translate(${endX - x}px, ${endY - y}px)` },
+        ], {
+          duration,
+          easing: 'ease-out',
+          fill: 'forwards',
+        });
+
+        setTimeout(() => particle.remove(), duration);
+      };
+
+      // Animation Logic
+      const animateTextByChar = () => {
+        elements.lines.forEach((el) => {
+          el.innerHTML = '';
+          el.style.opacity = '1';
+        });
+
+        elements.title.style.opacity = '0';
+        elements.title.style.transform = 'translateY(-25px)';
+
+        setTimeout(() => {
+          elements.title.style.opacity = '1';
+          elements.title.style.transform = 'translateY(0)';
+          setTimeout(animateNextLine, config.titleDelay);
+        }, 50);
+
+        elements.magicCircle.classList.add('running-circle');
+        elements.buttons.forEach((btn) => {
+          btn.style.opacity = '0';
+          btn.style.transform = 'translateY(25px)';
+        });
+      };
+
+      const animateNextLine = () => {
+        if (currentLineIndex >= textLines.length) {
+          elements.buttons.forEach((btn, index) => {
+            setTimeout(() => {
+              btn.style.opacity = '1';
+              btn.style.transform = 'translateY(0)';
+              btn.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
+            }, 400 + index * 250);
+          });
+          // Placeholder for sound effect on completion
+          // Example: new Audio('line-complete-chime.mp3').play();
+          return;
+        }
+
+        const lineElement = elements.lines[currentLineIndex];
+        lineElement.innerHTML = '';
+        const text = textLines[currentLineIndex];
+        charIndex = 0;
+
+        // Pre-render text with spans for characters
+        const chars = text.split('');
+        lineElement.innerHTML = chars.map((char, idx) => {
+          const isMagical = magicalWords.some(word => 
+            text.slice(idx).toLowerCase().startsWith(word.toLowerCase())
+          );
+          return `<span class="char${isMagical ? ' magical' : ''}">${char}</span>`;
+        }).join('');
+
+        animateChar(lineElement, text);
+      };
+
+      const animateChar = (element, text) => {
+        if (charIndex >= text.length) {
+          currentLineIndex++;
+          setTimeout(animateNextLine, config.lineDelay);
+          // Placeholder for sound effect on line completion
+          // Example: new Audio('line-complete-chime.mp3').play();
+          return;
+        }
+
+        const charElements = element.querySelectorAll('.char');
+        const currentChar = charElements[charIndex];
+        if (currentChar) {
+          // Animate character
+          requestAnimationFrame(() => {
+            currentChar.classList.add('visible');
+          });
+
+          // Create particle and rune effects
+          const charRect = currentChar.getBoundingClientRect();
+          if (Math.random() < 0.5) {
+            createParticle(charRect.right, charRect.top + charRect.height / 2);
+          }
+          if (Math.random() < 0.3) {
+            createParticle(charRect.left + charRect.width / 2, charRect.top, true);
+          }
+
+          charIndex++;
+          setTimeout(() => animateChar(element, text), config.charDelay);
+        }
+      };
+
+      // Initialize Animation
+      const initializeAnimation = () => {
+        currentLineIndex = 0;
+        charIndex = 0;
+        animateTextByChar();
+      };
+
+      // Event Handlers
+      const handleButtonInteraction = (button, callback) => {
+        const events = ['click', 'touchend'];
+        events.forEach((event) => {
+          button.addEventListener(event, (e) => {
+            e.preventDefault();
+            callback();
+            if (e.type === 'touchend' && 'vibrate' in navigator) {
+              navigator.vibrate(60);
+            }
+            // Add button particle effect
+            const rect = button.getBoundingClientRect();
+            for (let i = 0; i < 3; i++) {
+              createParticle(rect.left + Math.random() * rect.width, rect.top + Math.random() * rect.height);
+            }
+            // Placeholder for button sound effect
+            // Example: new Audio('button-click-chime.mp3').play();
+          });
+        });
+
+        button.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            callback();
+          }
+        });
+      };
+
+      handleButtonInteraction(document.getElementById('replay'), initializeAnimation);
+
+      handleButtonInteraction(document.getElementById('effect-toggle'), () => {
+        enhancedEffects = !enhancedEffects;
+        const button = document.getElementById('effect-toggle');
+        button.textContent = enhancedEffects ? 'Умерить чары' : 'Усилить чары';
+        document.body.classList.toggle('enhanced-effects', enhancedEffects);
+        document.querySelectorAll('.magic-circle, .portal-effect').forEach((el) => {
+          el.style.opacity = enhancedEffects ? '1' : '0.6';
+        });
+      });
+
+      // Responsive Adjustments
+      const handleResize = debounce(() => {
+        elements.lines.forEach((el) => {
+          el.style.fontSize = window.innerWidth < 480 ? '1rem' : '';
+        });
+      }, 100);
+
+      window.addEventListener('resize', handleResize);
+
+      // Initialize Effects
+      createStars();
+      createMeteors();
+      createFloatingSymbols();
+
+      // Start Animation
+      setTimeout(() => {
+        document.body.classList.add('loaded');
+        initializeAnimation();
+      }, config.initialDelay);
+    });
+  </script>
+</body>
+</html>
