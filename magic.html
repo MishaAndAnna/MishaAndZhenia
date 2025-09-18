@@ -551,7 +551,7 @@
         'звёздную', 'созвездий', 'руны', 'связи', 'душу',
         'тысячи', 'хранительница', 'ключа', 'духи', 'танцуют',
         'вселенной', 'могущественные', 'заклинания', 'магическую',
-        'Хранитель', 'Тайн',
+        'Хранитель', 'Тайн', 'удивительная', 'незабываемая', 'уникальная', 'муза', 'любимая',
       ];
 
       const runeSymbols = ['ᚱ', 'ᚢ', 'ᚦ', 'ᚨ', 'ᚹ', 'ᛋ', 'ᛒ', 'ᛗ'];
@@ -741,8 +741,6 @@
               btn.style.transition = 'opacity 0.8s ease-in-out, transform 0.8s ease-in-out';
             }, 400 + index * 250);
           });
-          // Placeholder for sound effect on completion
-          // Example: new Audio('line-complete-chime.mp3').play();
           return;
         }
 
@@ -767,8 +765,6 @@
         if (charIndex >= text.length) {
           currentLineIndex++;
           setTimeout(animateNextLine, config.lineDelay);
-          // Placeholder for sound effect on line completion
-          // Example: new Audio('line-complete-chime.mp3').play();
           return;
         }
 
@@ -816,8 +812,6 @@
             for (let i = 0; i < 3; i++) {
               createParticle(rect.left + Math.random() * rect.width, rect.top + Math.random() * rect.height);
             }
-            // Placeholder for button sound effect
-            // Example: new Audio('button-click-chime.mp3').play();
           });
         });
 
